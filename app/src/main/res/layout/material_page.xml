@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    >
+  <RelativeLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/cvLayout">
+
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cv"
+        android:animateLayoutChanges="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        card_view:cardBackgroundColor="#f2f2f2"
+        card_view:cardCornerRadius="3dp"
+        card_view:cardElevation="3dp"
+        card_view:cardPreventCornerOverlap="true"
+        card_view:cardUseCompatPadding="true"
+        card_view:contentPaddingBottom="5dp"
+        card_view:contentPaddingLeft="5dp"
+        card_view:contentPaddingTop="5dp">
+
+      <LinearLayout
+          android:id="@+id/linear_layout_nv_3"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/linear_layout_nv_4"
+            android:layout_width="match_parent"
+            android:layout_height="172dp"
+
+            android:orientation="vertical">
+
+
+          <LinearLayout
+              android:id="@+id/linear_left"
+              android:layout_width="328dp"
+              android:layout_height="50dp"
+
+              android:orientation="vertical">
+
+            <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+              <TextView
+                  android:id="@+id/full_name"
+                  android:layout_width="111dp"
+                  android:layout_height="match_parent"
+                  android:gravity="center_vertical"
+                  android:text="HAKIK NABIL"
+                  android:textAppearance="@android:style/TextAppearance.Holo.Large"
+                  android:textColor="#767171"
+                  android:textSize="20sp"
+                  android:textStyle="bold"
+                  app:fontFamily="@font/falliscoming" />
+
+              <TextView
+                  android:id="@+id/cmdTitle"
+                  android:layout_width="17dp"
+                  android:layout_height="25dp"
+                  android:gravity="center_vertical"
+                  android:text="N°:"
+
+                  android:textAppearance="@android:style/TextAppearance.Holo.Large"
+                  android:textColor="#B35555"
+                  android:textSize="15sp"
+
+                  app:fontFamily="@font/falliscoming" />
+
+              <TextView
+                  android:id="@+id/commande"
+                  android:layout_width="40dp"
+
+                  android:layout_height="25dp"
+                  android:text="123456"
+
+                  android:textAppearance="@android:style/TextAppearance.Holo.Large"
+                  android:textColor="#B35555"
+                  android:textSize="15dp"
+                  app:fontFamily="@font/falliscoming" />
+
+              <ImageView
+                  android:layout_width="10dp"
+                  android:layout_height="16dp"
+                  android:layout_gravity="top"
+                  android:contentDescription="clock"
+                  android:scaleType="fitEnd"
+
+                  android:src="@drawable/ic_clock" />
+
+              <TextView
+                  android:id="@+id/time"
+                  android:layout_width="50dp"
+                  android:layout_height="25dp"
+                  android:gravity="center_vertical"
+                  android:paddingStart="3dp"
+                  android:paddingLeft="1dp"
+                  android:scaleType="centerInside"
+                  android:text="10:10"
+                  android:textColor="#767171"
+                  android:textSize="15dp"
+                  app:fontFamily="@font/falliscoming" />
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/status_and_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="0dp">
+
+
+              <ImageView
+                  android:id="@+id/address_logo"
+                  android:layout_width="15dp"
+                  android:layout_height="25dp"
+                  android:layout_gravity="start"
+                  android:adjustViewBounds="true"
+                  android:padding="0dp"
+                  android:src="@drawable/ic_location"
+
+
+                  />
+
+              <TextView
+                  android:id="@+id/address"
+                  android:layout_width="254dp"
+                  android:layout_height="match_parent"
+
+                  android:fontFamily="@font/falliscoming"
+                  android:gravity="center_vertical"
+                  android:text="BD Mohammed 6, etg 3 ppt 10, lorem epsom, Casablanca"
+                  android:textAppearance="@android:style/TextAppearance.Holo.Large"
+                  android:textColor="#767171"
+                  android:textSize="14sp"
+                  android:textStyle="bold"
+
+
+                  />
+
+
+            </LinearLayout>
+
+
+          </LinearLayout>
+
+          <androidx.constraintlayout.widget.ConstraintLayout
+              android:id="@+id/constraintlayout_bottom"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/falliscoming"
+                android:gravity="right|bottom"
+                android:paddingRight="1dp"
+                android:text="200"
+                android:textColor="#B35555"
+                android:textSize="70sp"
+
+
+                android:textStyle="bold"
+                card_view:layout_constraintEnd_toStartOf="@+id/MAD" />
+
+            <TextView
+                android:id="@+id/MAD"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:gravity="right|bottom"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/falliscoming"
+                android:text="MAD"
+                android:textAppearance="@android:style/TextAppearance.Holo.Large"
+                android:textColor="#B35555"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                card_view:layout_constraintBottom_toBottomOf="@+id/price"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintTop_toTopOf="@+id/price" />
+
+          </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <TextView
+            android:id="@+id/detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is a text that must pop up after long click on the cardview"
+            android:visibility="gone"/>
+
+      </LinearLayout>
+    </androidx.cardview.widget.CardView>
+  </RelativeLayout>
+
+  <ImageView
+      android:id="@+id/status"
+      android:layout_width="104dp"
+      android:layout_height="93dp"
+      android:layout_alignTop="@+id/cvLayout"
+      android:layout_alignRight="@+id/cvLayout"
+      android:layout_marginHorizontal="0dp"
+      android:layout_marginVertical="12dp"
+
+      android:src="@drawable/ic_pending_ribbon" />
+
+
+</RelativeLayout >
+
