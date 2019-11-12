@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="0dp"
-            android:animateLayoutChanges="true"
+            android:animateLayoutChanges="false"
             card_view:cardBackgroundColor="#f2f2f2"
             card_view:cardCornerRadius="3dp"
             card_view:cardElevation="3dp"
@@ -36,8 +36,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/linear_layout_nv_4"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/c_layout_nv_4"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginLeft="0dp"
@@ -48,75 +48,113 @@
 
                     <LinearLayout
                         android:id="@+id/linear_left"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
 
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+
+                        card_view:layout_constraintTop_toTopOf="parent"
+                        card_view:layout_constraintLeft_toLeftOf="parent"
+                        >
 
                         <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:baselineAligned="false"
                             android:orientation="horizontal">
 
                             <TextView
                                 android:id="@+id/full_name"
-                                android:layout_width="75dp"
+                                android:layout_width="97dp"
                                 android:layout_height="25dp"
-                                android:gravity="center_vertical"
+                                android:gravity="top"
                                 android:text="HAKIK NABIL"
-                                android:textAppearance="@android:style/TextAppearance.Holo.Large"
                                 android:textColor="@color/gray"
-                                android:textSize="15sp"
-                                android:textStyle="bold"
-                                app:fontFamily="@font/falliscoming" />
+                                android:textSize="@dimen/normal"
+                                android:fontFamily="@font/font_style" />
 
                             <TextView
                                 android:id="@+id/cmdTitle"
-                                android:layout_width="17dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="25dp"
-                                android:gravity="center_vertical"
+                                android:gravity="top"
                                 android:text="N°:"
 
-                                android:textAppearance="@android:style/TextAppearance.Holo.Large"
-                                android:textColor="#B35555"
-                                android:textSize="15sp"
+                                android:textColor="@color/accent"
+                                android:textSize="@dimen/normal"
 
-                                app:fontFamily="@font/falliscoming" />
-
+                                android:fontFamily="@font/font_style" />
                             <TextView
                                 android:id="@+id/commande"
                                 android:layout_width="40dp"
 
                                 android:layout_height="25dp"
                                 android:text="123456"
+                                android:gravity="top"
 
-                                android:textAppearance="@android:style/TextAppearance.Holo.Large"
-                                android:textColor="#B35555"
-                                android:textSize="15dp"
-                                app:fontFamily="@font/falliscoming" />
+                                android:textColor="@color/accent"
+                                android:textSize="@dimen/normal"
+                                android:fontFamily="@font/font_style" />
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+                                    <ImageView
+                                        android:layout_width="10dp"
+                                        android:layout_height="12dp"
+                                        android:layout_gravity="top"
+                                        android:contentDescription="clock"
+                                        android:scaleType="fitEnd"
 
-                            <ImageView
-                                android:layout_width="10dp"
-                                android:layout_height="16dp"
-                                android:layout_gravity="top"
-                                android:contentDescription="clock"
-                                android:scaleType="fitEnd"
+                                        android:src="@drawable/ic_clock_2" />
 
-                                android:src="@drawable/ic_clock" />
+                                    <TextView
+                                        android:id="@+id/creation_time"
+                                        android:layout_width="85dp"
+                                        android:layout_height="14dp"
+                                        android:gravity="center_vertical"
+                                        android:paddingLeft="5dp"
+                                        android:scaleType="centerInside"
+                                        android:text="99:99"
+                                        android:textColor="@color/gray"
+                                        android:textSize="@dimen/normal"
+                                        android:fontFamily="@font/font_style"
+                                        />
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+                                    <ImageView
+                                        android:layout_width="10dp"
+                                        android:layout_height="12dp"
+                                        android:layout_gravity="top"
+                                        android:contentDescription="calendar"
+                                        android:scaleType="fitEnd"
 
-                            <TextView
-                                android:id="@+id/time"
-                                android:layout_width="50dp"
-                                android:layout_height="25dp"
-                                android:gravity="center_vertical"
-                                android:paddingStart="3dp"
-                                android:paddingLeft="1dp"
-                                android:scaleType="centerInside"
-                                android:text="10:10"
-                                android:textColor="@color/gray"
-                                android:textSize="15dp"
-                                app:fontFamily="@font/falliscoming" />
+                                        android:src="@drawable/ic_calendar" />
+
+                                    <TextView
+                                        android:id="@+id/creation_date"
+                                        android:layout_width="85dp"
+                                        android:layout_height="14dp"
+                                        android:gravity="center_vertical"
+                                        android:paddingLeft="5dp"
+
+                                        android:scaleType="centerInside"
+                                        android:text="10-10-2019"
+                                        android:textColor="@color/gray"
+                                        android:textSize="@dimen/normal"
+                                        android:fontFamily="@font/font_style" />
+                                </LinearLayout>
+
+
+                            </LinearLayout>
+
 
 
                         </LinearLayout>
@@ -139,29 +177,23 @@
                                 android:src="@drawable/ic_location"
                                 card_view:layout_constraintBaseline_toBaselineOf="@id/address"
                                 card_view:layout_constraintLeft_toLeftOf="parent"
-
-
-
                                 />
 
                             <TextView
                                 android:id="@+id/address"
-                                android:layout_width="225sp"
+                                android:layout_width="180dp"
                                 android:layout_height="25dp"
-
-                                android:fontFamily="@font/falliscoming"
-                                android:gravity="center_vertical"
-                                android:text="BD Mohammed 6, etg 3 ppt 10, lorem epsom, Casablanca"
-                                android:textAppearance="@android:style/TextAppearance.Holo.Large"
-                                android:textColor="@color/gray"
-                                android:textSize="14sp"
-                                android:textStyle="bold"
                                 android:layout_marginLeft="5dp"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:ellipsize="end"
+                                android:gravity="center_vertical"
+                                android:maxLines="1"
+                                android:text="BD Mohammed 6, etg 3 ppt 10, lorem epsom, Casablanca"
+                                android:textColor="@color/gray"
+                                android:textSize="@dimen/normal"
+                                card_view:fontFamily="@font/font_style"
                                 card_view:layout_constraintLeft_toRightOf="@id/address_logo"
-                                card_view:layout_constraintTop_toTopOf="parent"
-
-
-                                />
+                                card_view:layout_constraintTop_toTopOf="parent" />
 
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -169,63 +201,71 @@
 
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/linear_right"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.6">
 
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        card_view:layout_constraintRight_toRightOf="parent"
+                        >
                         <TextView
                             android:id="@+id/price"
-                            android:layout_width="65dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="50dp"
-                            android:fontFamily="@font/falliscoming"
-                            android:gravity="center_vertical|end"
+                            android:fontFamily="@font/font_style"
+                            android:gravity="top|end"
                             android:padding="1dp"
                             android:text="20,"
-                            android:textColor="#B35555"
-                            android:textSize="50sp"
-                            android:textStyle="bold"
+                            android:textColor="@color/accent"
+                            android:textSize="40sp"
+
+                            card_view:layout_constraintRight_toLeftOf="@id/afterCommaPrice"
+                            card_view:layout_constraintBaseline_toBaselineOf="@id/MAD"
 
                             />
                         <TextView
                             android:id="@+id/afterCommaPrice"
-                            android:layout_width="25dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="50dp"
-                            android:fontFamily="@font/falliscoming"
+                            android:fontFamily="@font/font_style"
                             android:gravity="center_vertical|start"
                             android:padding="1dp"
                             android:text="50"
-                            android:textColor="#B35555"
-                            android:textSize="25sp"
-                            android:textStyle="bold"
+                            android:textColor="@color/accent"
+                            android:textSize="@dimen/normal"
+
+                            card_view:layout_constraintRight_toLeftOf="@id/MAD"
+                            card_view:layout_constraintBaseline_toBaselineOf="@id/MAD"
+
 
                             />
 
                         <TextView
                             android:id="@+id/MAD"
-                            android:layout_width="30dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="50dp"
-                            android:fontFamily="@font/falliscoming"
-                            android:gravity="top|end"
-                            android:text="MAD"
-                            android:textAppearance="@android:style/TextAppearance.Holo.Large"
-                            android:textColor="#B35555"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
+                            android:fontFamily="@font/font_style"
+                            android:gravity="bottom|end"
+                            android:text=" DH"
+                            android:textColor="@color/accent"
+                            android:textSize="@dimen/normal"
+
+                            card_view:layout_constraintRight_toRightOf="parent"
+                            card_view:layout_constraintBottom_toBottomOf="parent"
+                            android:paddingRight="10dp"
 
 
                             />
-                    </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </LinearLayout>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
                     android:id="@+id/hidable_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:visibility="gone"
                     >
 
                     <LinearLayout
@@ -237,22 +277,80 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/falliscoming"
+                            android:fontFamily="@font/font_style"
                             android:text="Date et heure souhaitées de livraison:"
                             android:textColor="@color/gray"
                             android:textSize="@dimen/normal"
-                            android:textStyle="bold" />
+                            />
 
                         <TextView
+                            android:id="@+id/customer_ship_date"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
-                            android:fontFamily="@font/falliscoming"
+                            android:fontFamily="@font/font_style"
                             android:text="20:00"
                             android:textColor="@color/gray"
                             android:textSize="@dimen/normal"
-                            android:textStyle="bold" />
+                            />
                     </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+
+                        >
+                        <TextView
+                            android:id="@+id/label"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Libellé"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/font_style"
+                            android:textSize="@dimen/normal"
+                            android:textStyle="bold"
+                            android:textColor="@color/gray"
+
+                            />
+                        <TextView
+                            android:id="@+id/qty"
+
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Quantité"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:fontFamily="@font/font_style"
+                            android:textSize="@dimen/normal"
+                            android:textStyle="bold"
+                            android:textColor="@color/gray"
+
+                            />
+                        <TextView
+
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Prix"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:fontFamily="@font/font_style"
+                            android:textSize="@dimen/normal"
+                            android:textStyle="bold"
+                            android:textColor="@color/gray"
+
+                            />
+
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+
+                        android:background="#B35555"/>
+
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_detail_cmd"
@@ -272,14 +370,13 @@
                             android:layout_marginLeft="4dp"
                             android:layout_marginTop="10dp"
                             android:background="@drawable/canceled_bg"
-                            android:fontFamily="@font/falliscoming"
+                            android:fontFamily="@font/font_style"
                             android:gravity="center_vertical|center_horizontal"
                             android:padding="10dp"
                             android:text="Bouton1"
                             android:textColor="@color/white"
                             android:textSize="@dimen/normal"
 
-                            android:textStyle="bold"
                             card_view:layout_constraintLeft_toLeftOf="parent"
 
 
@@ -293,7 +390,7 @@
 
                             android:layout_marginLeft="5dp"
                             android:layout_marginTop="10dp"
-                            android:fontFamily="@font/falliscoming"
+                            android:fontFamily="@font/font_style"
 
                             android:background="@drawable/canceled_bg"
                             android:padding="10dp"
@@ -301,7 +398,6 @@
 
                             android:text="Bouton2"
                             android:textColor="@color/white"
-                            android:textStyle="bold"
 
                             card_view:layout_constraintLeft_toRightOf="@id/txtView1"
                             card_view:layout_constraintTop_toTopOf="parent" />
@@ -314,7 +410,7 @@
 
                             android:layout_marginLeft="5dp"
                             android:layout_marginTop="10dp"
-                            android:fontFamily="@font/falliscoming"
+                            android:fontFamily="@font/font_style"
 
                             android:background="@drawable/canceled_bg"
                             android:padding="10dp"
@@ -322,16 +418,9 @@
 
                             android:text="Bouton3"
                             android:textColor="@color/white"
-                            android:textStyle="bold"
-
                             card_view:layout_constraintLeft_toRightOf="@id/txtView2"
                             card_view:layout_constraintTop_toTopOf="parent"
-
-
                             />
-
-
-
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/call"
                             android:layout_width="0dp"
@@ -349,6 +438,7 @@
                             />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                 </LinearLayout>
 

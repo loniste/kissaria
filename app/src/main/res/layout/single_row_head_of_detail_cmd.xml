@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+
+        >
+        <TextView
+            android:id="@+id/label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="tomato"
+            android:layout_weight="1"
+            android:fontFamily="@font/falliscoming"
+            android:textSize="@dimen/normal"
+            android:textStyle="bold"
+            android:textColor="#B35555"
+
+            />
+        <TextView
+            android:id="@+id/qty"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="5."
+            android:layout_weight="1"
+            android:gravity="end"
+            android:fontFamily="@font/falliscoming"
+            android:textSize="@dimen/normal"
+            android:textStyle="bold"
+            android:textColor="#B35555"
+
+            />
+        <TextView
+            android:id="@+id/qty2"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="00"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:fontFamily="@font/falliscoming"
+            android:textSize="@dimen/normal_sur_deux"
+            android:textStyle="bold"
+            android:textColor="#B35555"
+
+            />
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="5."
+            android:layout_weight="1"
+            android:gravity="end"
+            android:fontFamily="@font/falliscoming"
+            android:textSize="@dimen/normal"
+            android:textStyle="bold"
+            android:textColor="#B35555"
+            />
+        <TextView
+            android:id="@+id/price2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00"
+            android:gravity="end"
+            android:fontFamily="@font/falliscoming"
+            android:textSize="@dimen/normal_sur_deux"
+            android:textStyle="bold"
+            android:textColor="#B35555"
+            />
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+
+        android:background="#B35555"/>
+
+
+</LinearLayout>
