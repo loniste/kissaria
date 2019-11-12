@@ -4,20 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Slogan">
+    tools:context=".SplashScreen">
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/guide_line"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.7"
+        app:layout_constraintGuide_percent="1"
 
         />
 
     <ImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="90dp"
         app:srcCompat="@drawable/am_v0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -25,6 +25,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/guide_line"
         android:onClick="animate"
+        android:layout_marginRight="30dp"
         />
     <TextView
         android:layout_width="wrap_content"
@@ -34,7 +35,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintTop_toBottomOf="@+id/image"
-        android:text="Souriez à l'avenir !"
+        android:text="Aswak alMaghrib"
+        android:layout_marginTop="10dp"
         android:textSize="20sp"
 
         />

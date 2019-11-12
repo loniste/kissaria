@@ -1,29 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen_bg</item>
     </style>
 
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
+        <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+
+        <item name="actionBarStyle">@style/MyActionBar</item>
+
+    </style>
+
+    <style name="MyActionBar" parent="Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="background">@color/accent2</item>
+        <item name="logo">@android:color/transparent</item>
+        <item name="titleTextStyle">@style/TitleTextStyle</item>
+
+    </style>
+
+    <style name="TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/gray</item>
+    </style>
+
+
+
     <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorPrimary">@color/accent2</item>
+        <item name="colorPrimaryDark">@color/accent2</item>
+        <item name="android:windowBackground">@color/accent2</item>
+        <item name="colorControlNormal">@color/gray</item>
+        <item name="colorControlActivated">@color/gray</item>
+        <item name="colorControlHighlight">@color/gray</item>
+        <item name="android:textColorHint">@color/gray</item>
 
-        <item name="android:windowBackground">@color/primary</item>
 
-        <item name="colorControlNormal">@color/iron</item>
-        <item name="colorControlActivated">@color/white</item>
-        <item name="colorControlHighlight">@color/white</item>
-        <item name="android:textColorHint">@color/iron</item>
-
-        <item name="colorButtonNormal">@color/primary_darker</item>
-        <item name="android:colorButtonNormal">@color/primary_darker</item>
+        <item name="colorButtonNormal">@color/accent3</item>
+        <item name="android:colorButtonNormal">@color/accent3</item>
     </style>
 
     <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Dialog">
-        <item name="colorAccent">@color/white</item>
+        <item name="colorAccent">@color/gray</item>
         <item name="android:textColorPrimary">@color/iron</item>
-        <item name="android:background">@color/primary</item>
+        <item name="android:background">@color/accent2</item>
     </style>
 
 </resources>

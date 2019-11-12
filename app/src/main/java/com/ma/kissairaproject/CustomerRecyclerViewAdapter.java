@@ -2,7 +2,6 @@ package com.ma.kissairaproject;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
@@ -30,14 +29,14 @@ import java.util.concurrent.ExecutionException;
 
 import static android.content.Context.MODE_PRIVATE;
 
-class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewAdapter.MyViewHolder> {
+class CustomerRecyclerViewAdapter extends RecyclerView.Adapter<CustomerRecyclerViewAdapter.MyViewHolder> {
 
-    private ArrayList<SellerSingleRow> mDataset;
+    private ArrayList<CustomerSingleRow> mDataset;
     private static int prev_expanded=-1;
     private Context context;
     private RecyclerView recycler;
-    private SharedPreferences sharedPreferences;
-    private String userType;
+    private String userId;
+
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -47,23 +46,15 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
         public ImageView status;
         public TextView price;
         public TextView afterCommaPrice;
-        public ImageView callButton;
         public RecyclerView rv_detail_cmd;
         TextView address;
-        String phone_number;
         TextView customer_ship_date;
         TextView creation_time;
         TextView creation_date;
         TextView full_name;
 
-
-        public TextView bouton1;
-        public TextView bouton2;
-        public TextView bouton3;
         public int visibilityState=0;
         View v;
-
-
         public MyViewHolder(View view) {
             super(view);
             this.cmd = view.findViewById(R.id.commande);
@@ -71,10 +62,7 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
             this.price = view.findViewById(R.id.price);
             this.afterCommaPrice = view.findViewById(R.id.afterCommaPrice);
 
-            this.bouton1 = view.findViewById(R.id.txtView1);
-            this.bouton2 = view.findViewById(R.id.txtView2);
-            this.bouton3 = view.findViewById(R.id.txtView3);
-            this.callButton = view.findViewById(R.id.call);
+
 
             this.address = view.findViewById(R.id.address);
             this.customer_ship_date = view.findViewById(R.id.customer_ship_date);
@@ -91,17 +79,18 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    SellerRecyclerViewAdapter(ArrayList<SellerSingleRow> myDataset, Context c, String type) {
+    CustomerRecyclerViewAdapter(ArrayList<CustomerSingleRow> myDataset, Context c, String userId) {
         this.context = c;
         mDataset = myDataset;
-        userType=type;
+        this.userId =userId;
+
     }
     // Create new views (invoked by the layout manager)
     @NonNull
     @Override
-    public SellerRecyclerViewAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // create a new view
-        View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row, parent, false);
+        View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row_customer, parent, false);
         return new MyViewHolder(v);
     }
 
@@ -130,24 +119,15 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
         holder.creation_date.setText(mDataset.get(position).getCreation_date());
         holder.customer_ship_date.setText(mDataset.get(position).getCustomer_ship_date());
         holder.full_name.setText(mDataset.get(position).getFull_name());
-        holder.phone_number=mDataset.get(position).getPhone_number();
 
+        holder.rv_detail_cmd.setLayoutManager(new LinearLayoutManager(context));
+        holder.rv_detail_cmd.setAdapter(new RvShopDetailsAdapter(mDataset.get(position).getDetailShopList(),context, userId));
 
         if (holder.visibilityState==1){
             holder.getView().findViewById(R.id.hidable_view).setVisibility(View.VISIBLE);
         } else  {
             holder.getView().findViewById(R.id.hidable_view).setVisibility(View.GONE);
-
         }
-        holder.callButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:"+holder.phone_number));
-                holder.getView().getContext().startActivity(intent);
-
-            }
-        });
         holder.address.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View view) {
@@ -155,14 +135,6 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
               }
         });
 
-        if (userType.equals("seller_login")) {
-            sellerButtonsProcessing(holder, position);
-        }else if (userType.equals("customer_login")){
-            customerButtonsProcessing(holder, position);
-        }
-        holder.rv_detail_cmd.setLayoutManager(new LinearLayoutManager(context));
-
-        holder.rv_detail_cmd.setAdapter(new RvCmdDetailsAdapter(mDataset.get(position).getDetailCmdsList()));
 
         final int GRAY = 0xFFf0f0f0;
         CardView cv= holder.itemView.findViewById(R.id.cv);
@@ -224,93 +196,107 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
             }
         });
     }
-    private void sellerButtonsProcessing(MyViewHolder holder, int position) {
-
-        /**processing buttons in a single item when status is pending*/
-        if (mDataset.get(position).getStatusCode() == R.drawable.ic_pending_ribbon) {
-            holder.bouton1.setVisibility(View.VISIBLE);
-            holder.bouton1.setText("Prête");
-            setButtonBg(holder.bouton1, R.drawable.ready_bg);
-            holder.bouton1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
-                    if (sharedPreferences.contains("EMAIL") && sharedPreferences.contains("PASSWORD")) {
-                        String userId = sharedPreferences.getString("USERID", "");
-                        if (!userId.equals("")){
-                            try {
-                                String result=backgroundWorker.execute("post_status",userId,mDataset.get(position).getCmd(),"ready").get();
-                                JSONObject jsonObject = new JSONObject(result);
-                                if (jsonObject.getString("status").equals("success")){
-                                    // change status icon
-                                    holder.status.setImageResource(R.drawable.ic_ready_ribbon);
-                                    //make buttons gone
-                                    holder.bouton1.setVisibility(View.GONE);
-                                    holder.bouton2.setVisibility(View.GONE);
-                                    holder.bouton3.setVisibility(View.GONE);
-                                }
-
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            });
-            holder.bouton2.setVisibility(View.VISIBLE);
-            holder.bouton2.setText("Annuler");
-            setButtonBg(holder.bouton2,R.drawable.canceled_bg);
-
-            holder.bouton2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    SharedPreferences sharedPreferences =context.getSharedPreferences("USER_INFO", MODE_PRIVATE);
-                    BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
-                    if (sharedPreferences.contains("EMAIL") && sharedPreferences.contains("PASSWORD")) {
-                        String userId = sharedPreferences.getString("USERID", "");
-                        if (!userId.equals("")){
-                            try {
-                                String result=backgroundWorker.execute("post_status",userId,mDataset.get(position).getCmd(),"canceled").get();
-                                JSONObject jsonObject = new JSONObject(result);
-                                if (jsonObject.getString("status").equals("success")){
-                                    // change status icon
-                                    holder.status.setImageResource(R.drawable.ic_canceled_ribbon);
-                                    //make buttons gone
-                                    holder.bouton1.setVisibility(View.GONE);
-                                    holder.bouton2.setVisibility(View.GONE);
-                                    holder.bouton3.setVisibility(View.GONE);
-                                }
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            });
+    // Return the size of your dataset (invoked by the layout manager)
+    @Override
+    public int getItemCount() {
+        return mDataset.size();
+    }
 
 
+}
 
-            holder.bouton3.setVisibility(View.GONE);
+class RvShopDetailsAdapter extends RecyclerView.Adapter<RvShopDetailsAdapter.MyViewHolder> {
+    private ArrayList<SingleRowShop> shopList;
+    private String userId;
+
+
+    Context context;
+
+
+    public static class MyViewHolder extends RecyclerView.ViewHolder {//Why static?
+        TextView shopName;
+        View shopStatus;
+        RecyclerView productsRecyclerView;
+
+        String phone_number;
+        public ImageView callButton;
+        public TextView bouton1;
+        public TextView bouton2;
+        public TextView bouton3;
+
+        View v;
+        MyViewHolder(View view) {
+            super(view);
+            this.shopName = view.findViewById(R.id.shop_name);
+            this.shopStatus=view.findViewById(R.id.status_line);
+
+            this.bouton1 = view.findViewById(R.id.txtView1);
+            this.bouton2 = view.findViewById(R.id.txtView2);
+            this.bouton3 = view.findViewById(R.id.txtView3);
+            this.callButton = view.findViewById(R.id.call);
+
+
+            this.productsRecyclerView = view.findViewById(R.id.shop_recycler_view);
+            this.v=view;
         }
-        /**processing buttons in a single item when status is something else*/
-        else if (mDataset.get(position).getStatusCode()!= R.drawable.ic_pending_ribbon){
-
-            holder.bouton1.setVisibility(View.GONE);
-            holder.bouton2.setVisibility(View.GONE);
-            holder.bouton3.setVisibility(View.GONE);
+        View getView(){
+            return v;
         }
     }
-    private void customerButtonsProcessing(MyViewHolder holder, int position) {
+
+    RvShopDetailsAdapter(ArrayList<SingleRowShop> list, Context context, String userId){
+        shopList =list;
+        this.context=context;
+        this.userId=userId;
+
+        //Log.d("shopList", String.valueOf(shopList.get(1).getArticle()));
+    }
+    @NonNull
+    @Override
+    public RvShopDetailsAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row_of_shop, parent, false);
+            MyViewHolder vh = new MyViewHolder(v);
+            return (MyViewHolder) vh;
+    }
+    @Override
+    public void onBindViewHolder(@NonNull RvShopDetailsAdapter.MyViewHolder holder, int position) {
+            holder.shopName.setText(shopList.get(position).getShopName());
+            int statusColor = 0;
+            switch (shopList.get(position).getShopStatus()) {
+                case "pending":
+                    statusColor=ContextCompat.getColor(holder.shopStatus.getContext(), R.color.pending);
+                    break;
+                case "canceled":
+                    statusColor=ContextCompat.getColor(holder.shopStatus.getContext(), R.color.canceled);
+                    break;
+                case "ready":
+                    statusColor=ContextCompat.getColor(holder.shopStatus.getContext(), R.color.ready);
+                    break;
+                case "received":
+                    statusColor=ContextCompat.getColor(holder.shopStatus.getContext(), R.color.received);
+                    break;
+            }
+            holder.shopStatus.setBackgroundColor(statusColor);
+            holder.productsRecyclerView.setLayoutManager(new LinearLayoutManager(holder.shopName.getContext()));
+            holder.productsRecyclerView.setAdapter(new ProductsDetailsAdapter(shopList.get(position).getProductsList()));
+
+            ((MyViewHolder) holder).callButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:"+ holder.phone_number));
+                    holder.getView().getContext().startActivity(intent);
+
+                }
+            });
+            holder.phone_number=shopList.get(position).getPhoneNumber();
+
+            customerButtonsProcessing(holder, position);
+
+    }
+    private void customerButtonsProcessing(RvShopDetailsAdapter.MyViewHolder holder, int position) {
         /**processing buttons in a single item when status is ready*/
-        if (mDataset.get(position).getStatusCode() == R.drawable.ic_ready_ribbon) {
+        if (shopList.get(position).getShopStatus().equals("ready")) {
             holder.bouton1.setVisibility(View.VISIBLE);
             holder.bouton1.setText("Reçu");
             setButtonBg(holder.bouton1, R.drawable.ready_bg);
@@ -318,27 +304,24 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
                 @Override
                 public void onClick(View view) {
                     BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
-                    if (sharedPreferences.contains("EMAIL") && sharedPreferences.contains("PASSWORD")) {
-                        String userId = sharedPreferences.getString("USERID", "");
-                        if (!userId.equals("")){
-                            try {
-                                String result=backgroundWorker.execute("post_status", userId, mDataset.get(position).getCmd(),"received").get();
-                                JSONObject jsonObject = new JSONObject(result);
-                                if (jsonObject.getString("status").equals("success")){
-                                    // change status icon
-                                    holder.status.setImageResource(R.drawable.ic_received_ribbon);
-                                    //make buttons gone
-                                    holder.bouton1.setVisibility(View.GONE);
-                                    holder.bouton2.setVisibility(View.GONE);
-                                    holder.bouton3.setVisibility(View.GONE);
-                                }
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    if (!userId.equals("")){
+                        try {
+                            String result=backgroundWorker.execute("post_status", userId, shopList.get(position).getShopName(),"received").get();
+                            JSONObject jsonObject = new JSONObject(result);
+                            if (jsonObject.getString("status").equals("success")){
+                                // change status icon
+                                holder.shopStatus.setBackgroundColor(ContextCompat.getColor(holder.shopStatus.getContext(), R.color.received));
+                                //make buttons gone
+                                holder.bouton1.setVisibility(View.GONE);
+                                holder.bouton2.setVisibility(View.GONE);
+                                holder.bouton3.setVisibility(View.GONE);
                             }
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -349,71 +332,64 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
             holder.bouton2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SharedPreferences sharedPreferences =context.getSharedPreferences("USER_INFO", MODE_PRIVATE);
                     BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
-                    if (sharedPreferences.contains("EMAIL") && sharedPreferences.contains("PASSWORD")) {
-                        String userId = sharedPreferences.getString("USERID", "");
-                        if (!userId.equals("")){
-                            try {
-                                String result=backgroundWorker.execute("post_status",userId,mDataset.get(position).getCmd(),"canceled").get();
-                                JSONObject jsonObject = new JSONObject(result);
-                                if (jsonObject.getString("status").equals("success")){
-                                    // change status icon
-                                    holder.status.setImageResource(R.drawable.ic_canceled_ribbon);
-                                    //make buttons gone
-                                    holder.bouton1.setVisibility(View.GONE);
-                                    holder.bouton2.setVisibility(View.GONE);
-                                    holder.bouton3.setVisibility(View.GONE);
-                                }
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    if (!userId.equals("")){
+                        try {
+                            String result=backgroundWorker.execute("post_status",userId,shopList.get(position).getshId(),"canceled").get();
+                            JSONObject jsonObject = new JSONObject(result);
+                            if (jsonObject.getString("status").equals("success")){
+                                // change status icon
+                                holder.shopStatus.setBackgroundColor(ContextCompat.getColor(context,R.color.canceled));
+                                //make buttons gone
+                                holder.bouton1.setVisibility(View.GONE);
+                                holder.bouton2.setVisibility(View.GONE);
+                                holder.bouton3.setVisibility(View.GONE);
                             }
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
             });
             holder.bouton3.setVisibility(View.GONE);
         }
-        /**processing buttons in a single item when status is something else*/
-        else if (mDataset.get(position).getStatusCode()== R.drawable.ic_canceled_ribbon  || mDataset.get(position).getStatusCode()== R.drawable.ic_received_ribbon){
+        /**processing buttons in a single item when status is canceled or received*/
+        else if (shopList.get(position).getShopStatus().equals("canceled")  || shopList.get(position).getShopStatus().equals("received")){
 
             holder.bouton1.setVisibility(View.GONE);
             holder.bouton2.setVisibility(View.GONE);
             holder.bouton3.setVisibility(View.GONE);
-        } else {//if status is everithing apart from canceled and ready
+        }
+        if (shopList.get(position).getShopStatus().equals("pending")) {
             holder.bouton1.setVisibility(View.VISIBLE);
             holder.bouton1.setText("Annuler");
             setButtonBg(holder.bouton1,R.drawable.canceled_bg);
             holder.bouton1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SharedPreferences sharedPreferences =context.getSharedPreferences("USER_INFO", MODE_PRIVATE);
                     BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
-                    if (sharedPreferences.contains("EMAIL") && sharedPreferences.contains("PASSWORD")) {
-                        String userId = sharedPreferences.getString("USERID", "");
-                        if (!userId.equals("")){
-                            try {
-                                String result=backgroundWorker.execute("post_status",userId,mDataset.get(position).getCmd(),"canceled").get();
-                                JSONObject jsonObject = new JSONObject(result);
-                                if (jsonObject.getString("status").equals("success")){
-                                    // change status icon
-                                    holder.status.setImageResource(R.drawable.ic_canceled_ribbon);
-                                    //make buttons gone
-                                    holder.bouton1.setVisibility(View.GONE);
-                                    holder.bouton2.setVisibility(View.GONE);
-                                    holder.bouton3.setVisibility(View.GONE);
-                                }
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    if (!userId.equals("")){
+                        try {
+                            String result=backgroundWorker.execute("post_status",userId,shopList.get(position).getshId(),"canceled").get();
+                            JSONObject jsonObject = new JSONObject(result);
+                            if (jsonObject.getString("status").equals("success")){
+                                // change status icon
+                                holder.shopStatus.setBackgroundColor(ContextCompat.getColor(context,R.color.canceled));
+                                //make buttons gone
+                                holder.bouton1.setVisibility(View.GONE);
+                                holder.bouton2.setVisibility(View.GONE);
+                                holder.bouton3.setVisibility(View.GONE);
                             }
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -421,13 +397,14 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
             holder.bouton2.setVisibility(View.GONE);
             holder.bouton3.setVisibility(View.GONE);
         }
+        else {
+            Log.d("status_problem", "status problem");
+        }
     }
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return shopList.size();
     }
-
     private void setButtonBg(TextView bouton, int bg_code) {
         int pl = bouton.getPaddingLeft();
         int pt = bouton.getPaddingTop();
@@ -437,27 +414,11 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
         bouton.setPadding(pl, pt, pr, pb);
     }
 }
-class RvCmdDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private ArrayList<SingleRowProduct> mDataSet;
-    private final int HEAD_TYPE=1;
-    private final int CONTENT_TYPE=2;
-    private final int SHOP_TYPE=3;
-    public static class MyHeadViewHolder extends RecyclerView.ViewHolder {//Why static?
-        TextView label;
-        TextView qty;
-        TextView price;
-        View v;
-        MyHeadViewHolder(View view) {
-            super(view);
-            this.label = view.findViewById(R.id.label);
-            this.qty = view.findViewById(R.id.qty);
-            this.price = view.findViewById(R.id.price);
-            this.v=view;
-        }
-        View getView(){
-            return v;
-        }
-    }
+
+
+class ProductsDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private ArrayList<SingleRowProduct> productsList;
+
     public static class MyViewHolder extends RecyclerView.ViewHolder {//Why static?
         TextView label;
         TextView qty;
@@ -478,56 +439,27 @@ class RvCmdDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             return v;
         }
     }
-    public static class MyShopHolder extends RecyclerView.ViewHolder {//Why static?
-        TextView shop_name;
-        View v;
-        MyShopHolder(View view) {
-            super(view);
-            this.shop_name = view.findViewById(R.id.label);
-            this.v=view;
-        }
-        View getView(){
-            return v;
-        }
-    }
-    @Override
-    public int getItemViewType(int position) {
-        if (position==0) {
-            return HEAD_TYPE;
-
-        } else {
-            return CONTENT_TYPE;
-        }
-    }
-    RvCmdDetailsAdapter(ArrayList<SingleRowProduct> list){
-        mDataSet=list;
-        //Log.d("mDataSet", String.valueOf(mDataSet.get(1).getArticle()));
+    ProductsDetailsAdapter(ArrayList<SingleRowProduct> list){
+        productsList =list;
+        //Log.d("shopList", String.valueOf(shopList.get(1).getArticle()));
     }
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType==HEAD_TYPE){
-            View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row_head_of_detail_cmd, parent, false);
-            MyHeadViewHolder vh = new MyHeadViewHolder(v);
-            return (MyHeadViewHolder) vh;
-        } else{
-            View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row_detail_cmd, parent, false);
-            MyViewHolder vh = new MyViewHolder(v);
-            return (MyViewHolder) vh;
-        }
+        View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row_detail_cmd, parent, false);
+        MyViewHolder vh = new MyViewHolder(v);
+        return (MyViewHolder) vh;
     }
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (getItemViewType(position)==CONTENT_TYPE){
-            ((MyViewHolder) holder).label.setText(mDataSet.get(position).getArticle());
-            ((MyViewHolder) holder).qty.setText(mDataSet.get(position).getQuantity());
-            ((MyViewHolder) holder).qty2.setText(mDataSet.get(position).getQuantity2());
-            ((MyViewHolder) holder).price.setText(mDataSet.get(position).getPrice());
-            ((MyViewHolder) holder).price2.setText(mDataSet.get(position).getPrice2());
-        }
+            ((MyViewHolder) holder).label.setText(productsList.get(position).getArticle());
+            ((MyViewHolder) holder).qty.setText(productsList.get(position).getQuantity());
+            ((MyViewHolder) holder).qty2.setText(productsList.get(position).getQuantity2());
+            ((MyViewHolder) holder).price.setText(productsList.get(position).getPrice());
+            ((MyViewHolder) holder).price2.setText(productsList.get(position).getPrice2());
     }
     @Override
     public int getItemCount() {
-        return mDataSet.size();
+        return productsList.size();
     }
 }

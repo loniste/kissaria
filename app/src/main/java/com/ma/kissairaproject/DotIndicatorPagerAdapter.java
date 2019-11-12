@@ -14,21 +14,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.PagerAdapter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class DotIndicatorPagerAdapter extends PagerAdapter {
 
-  private  ArrayList<SingleRow> list;
+  private  ArrayList<SellerSingleRow> list;
 
   /*private static final List<Item> items =
       Arrays.asList(new Item(R.color.md_indigo_500), new Item(R.color.md_green_500), new Item(R.color.md_red_500), new Item(R.color.md_orange_500),
           new Item(R.color.md_purple_500));*/
-  public DotIndicatorPagerAdapter(ArrayList<SingleRow> list){
+  public DotIndicatorPagerAdapter(ArrayList<SellerSingleRow> list){
       this.list=list;
   }
   @NonNull @Override public Object instantiateItem(@NonNull ViewGroup container, int position) {

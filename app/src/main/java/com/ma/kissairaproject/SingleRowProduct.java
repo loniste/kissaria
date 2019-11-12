@@ -1,6 +1,6 @@
 package com.ma.kissairaproject;
 
-class SingleRowDetailCmd {
+class SingleRowProduct {
     private String article;
     private String quantity;
     private String quantity2;
@@ -9,14 +9,14 @@ class SingleRowDetailCmd {
 
 
 
-    public SingleRowDetailCmd(String article, String qty, String qty2, String price, String price2) {
+    public SingleRowProduct(String article, String qty, String qty2, String price, String price2) {
         this.article=article;
         this.quantity=qty;
         this.quantity2=qty2;
         this.price=price;
         this.price2=price2;
     }
-    public SingleRowDetailCmd(){
+    public SingleRowProduct(){
         //**this is just for creating an instance for the very first row, the head row*/
     }
     public String getArticle() {

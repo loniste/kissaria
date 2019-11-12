@@ -12,10 +12,11 @@
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
-        <ImageView android:src="@drawable/logo"
-            android:layout_width="wrap_content"
-            android:layout_height="72dp"
+        <ImageView android:src="@drawable/am_logo_v2"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
             android:layout_marginBottom="24dp"
+            android:scaleType="centerInside"
             android:layout_gravity="center_horizontal" />
 
         <!--  Email Label -->
@@ -24,11 +25,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_email"
+
+            <EditText
+                android:id="@+id/input_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="Email" />
+                android:hint="Email"
+                android:textColor="@color/gray"
+                android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!--  Password Label -->
@@ -41,6 +45,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
+                android:textColor="@color/gray"
+
                 android:hint="Password"/>
         </com.google.android.material.textfield.TextInputLayout>
 

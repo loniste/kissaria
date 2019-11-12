@@ -16,8 +16,6 @@ package com.ma.kissairaproject;
  * limitations under the License.
  */
 
-package androidx.transition;
-
 import android.content.Context;
 import android.util.AttributeSet;
 
@@ -34,27 +32,25 @@ import androidx.transition.TransitionSet;
  * tag <code>autoTransition</code>, along with the other standard
  * attributes of {@link Transition}.</p>
  */
-public class AutoTransition extends TransitionSet {
+public class CustomTransition extends TransitionSet {
 
     /**
      * Constructs an AutoTransition object, which is a TransitionSet which
      * first fades out disappearing targets, then moves and resizes existing
      * targets, and finally fades in appearing targets.
      */
-    public AutoTransition() {
+    public CustomTransition() {
         init();
     }
 
-    public AutoTransition(Context context, AttributeSet attrs) {
+    public CustomTransition(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
     private void init() {
         setOrdering(ORDERING_SEQUENTIAL);
-        addTransition(new Fade(Fade.OUT))
-                .addTransition(new ChangeBounds())
-                .addTransition(new Fade(Fade.IN));
+        addTransition(new ChangeBounds());
     }
 
 }

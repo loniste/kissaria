@@ -2,14 +2,14 @@ package com.ma.kissairaproject;
 
 import java.util.ArrayList;
 
-class SellerSingleRow {
+class CustomerSingleRow {
     String cmd;
     String full_name;
     int statusCode;
     String price;
     String afterCommaPrice;
     boolean recent;
-    ArrayList<SingleRowProduct> detailCmdsList;
+    ArrayList<SingleRowShop> detailShopList;
     String address;
     String phone_number;
     String customer_ship_date;
@@ -17,15 +17,15 @@ class SellerSingleRow {
     String creation_date;
 
 
-    public SellerSingleRow(){
+    public CustomerSingleRow(){
         this.cmd="123";
         this.full_name="name surname";
         this.statusCode=R.drawable.ic_pending_ribbon;
         this.price="99.";
         this.afterCommaPrice="99";
         this.recent=true;
-        this.detailCmdsList=new ArrayList<>() ;
-        detailCmdsList.add(new SingleRowProduct("tomates","10.","10","80.","80"));
+        this.detailShopList=new ArrayList<>() ;
+        detailShopList.add(new SingleRowShop());
         this.address="Adrresse";
         this.phone_number="0606060606";
         this.customer_ship_date="2019-12-10 20:20:20";
@@ -33,18 +33,18 @@ class SellerSingleRow {
         this.creation_date="2019-20-20";
     }
 
-    public SellerSingleRow(String cmd,
-                           String full_name,
-                           int statusCode,
-                           String price,
-                           String afterCommaPrice,
-                           boolean recent,
-                           ArrayList<SingleRowProduct> detailCmdsList,
-                           String address,
-                           String phone_number,
-                           String customer_ship_date,
-                           String creation_time,
-                           String creation_date
+    public CustomerSingleRow(String cmd,
+                             String full_name,
+                             int statusCode,
+                             String price,
+                             String afterCommaPrice,
+                             boolean recent,
+                             ArrayList<SingleRowShop> detailShopList,
+                             String address,
+                             String phone_number,
+                             String customer_ship_date,
+                             String creation_time,
+                             String creation_date
 
     ) {
 
@@ -54,7 +54,7 @@ class SellerSingleRow {
         this.price=price;
         this.afterCommaPrice=afterCommaPrice;
         this.recent=recent;
-        this.detailCmdsList=new ArrayList<>(detailCmdsList) ;
+        this.detailShopList=new ArrayList<>(detailShopList) ;
         this.address=address;
         this.phone_number=phone_number;
         this.customer_ship_date=customer_ship_date;
@@ -82,14 +82,9 @@ class SellerSingleRow {
         this.recent = recent;
     }
 
-    public ArrayList<SingleRowProduct> getDetailCmdsList() {
-        return detailCmdsList;
+    public ArrayList<SingleRowShop> getDetailShopList() {
+        return detailShopList;
     }
-
-    public void setDetailCmdsList(ArrayList<SingleRowProduct> detailCmdsList) {
-        this.detailCmdsList = detailCmdsList;
-    }
-
 
     public String getCmd(){
         return this.cmd;

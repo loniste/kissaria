@@ -14,6 +14,10 @@ import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import org.json.JSONObject;
+
+import java.util.Map;
+
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
     private static final String TAG ="TAG3" ;
     private static String token;
@@ -38,7 +42,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        Handler handler = new Handler(Looper.getMainLooper());
+        /*Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
             public void run() {
                 Toast.makeText(getApplicationContext(), "New notification !", Toast.LENGTH_SHORT).show();
@@ -49,6 +53,26 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 getApplicationContext().startActivity(intent);
             }
         });
+*/
+        // This function will create an intent. This intent must take as parameter the "unique_name" that you registered your activity with
+
+
+
+
+        Log.e("dataChat",remoteMessage.getData().toString());
+
+        Map<String, String> params = remoteMessage.getData();
+        JSONObject object = new JSONObject(params);
+        Log.e("JSON_OBJECT", object.toString());
+
+
+        Intent intent = new Intent("unique_name");
+
+        //put whatever data you want to send, if any
+        intent.putExtra("message", object.toString());
+
+        //send broadcast
+        getApplicationContext().sendBroadcast(intent);
 
 
 

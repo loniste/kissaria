@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:text="tomato"
             android:layout_weight="1"
-            android:fontFamily="@font/falliscoming"
+            android:fontFamily="@font/font_style"
             android:textSize="@dimen/normal"
             android:textStyle="bold"
             android:textColor="#B35555"
@@ -30,35 +30,57 @@
 
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="5 kg"
+            android:text="5."
             android:layout_weight="1"
-            android:gravity="center"
-            android:fontFamily="@font/falliscoming"
+            android:gravity="end"
+            android:fontFamily="@font/font_style"
             android:textSize="@dimen/normal"
             android:textStyle="bold"
             android:textColor="#B35555"
 
             />
         <TextView
-            android:id="@+id/price"
+            android:id="@+id/qty2"
 
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="5 DH"
+            android:text="00"
             android:layout_weight="1"
-            android:gravity="end"
-            android:fontFamily="@font/falliscoming"
-            android:textSize="@dimen/normal"
+            android:gravity="start"
+            android:fontFamily="@font/font_style"
+            android:textSize="@dimen/normal_sur_deux"
             android:textStyle="bold"
             android:textColor="#B35555"
 
+            />
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="5."
+            android:layout_weight="1"
+            android:gravity="end"
+            android:fontFamily="@font/font_style"
+            android:textSize="@dimen/normal"
+            android:textStyle="bold"
+            android:textColor="#B35555"
+            />
+        <TextView
+            android:id="@+id/price2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00"
+            android:gravity="end"
+            android:fontFamily="@font/font_style"
+            android:textSize="@dimen/normal_sur_deux"
+            android:textStyle="bold"
+            android:textColor="#B35555"
             />
 
     </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-
         android:background="#B35555"/>
 
 

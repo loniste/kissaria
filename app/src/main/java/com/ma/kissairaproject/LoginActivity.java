@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
@@ -34,13 +35,23 @@ public class LoginActivity extends AppCompatActivity {
     //LoginDatabaseAdapter loginDataBaseAdapter;
 
     SharedPreferences sharedPreferences;
+    String token=null;
     String userId="";
     String email="";
     String password="";
+    String userType ="seller_login";
+    String result =null;
+    String status = null;
+
     private static final String USER_INFO = "USER_INFO";
     private static final String EMAIL = "EMAIL";
     private static final String PASSWORD = "PASSWORD";
     private static final String USERID = "USERID";
+    private static final String TYPE = "TYPE" ;
+
+    JSONObject jsonObject;
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,82 +88,146 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
     public void login() {
-        Log.d(TAG, "Login");
-        String token=null;
-        if (!validate()) {
+        Log.d(TAG, "Login"+"");
+        if (!validate()) {//make sure only that the input mail and password are written well
             onLoginFailed();
             return;
         }
         _loginButton.setEnabled(false);
+        email = email_ET.getText().toString();
+        password = password_ET.getText().toString();
 
+        // TODO: Implement your own authentication logic here.
+
+        Intent intentToken= getIntent();
+        Bundle bundleToken = intentToken.getExtras();
+
+        if(bundleToken!=null ) {
+            token = (String) bundleToken.get("TOKEN");
+            seekAndGetUserType();
+
+        }
+    }
+
+    private void seekAndGetUserType() {
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
 
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
-
-        email = email_ET.getText().toString();
-        password = password_ET.getText().toString();
-
-        // TODO: Implement your own authentication logic here.
-        String type="login";
         BackgroundWorker backgroundWorker=new BackgroundWorker(LoginActivity.this);
-        String tempResult=null;
-        Intent intentToken= getIntent();
-        Bundle bundleToken = intentToken.getExtras();
-
-        if(bundleToken!=null )
-        {
-            token =(String) bundleToken.get("TOKEN");
-            try {
-                Toast.makeText(LoginActivity.this, "token: " + token, Toast.LENGTH_SHORT).show();
-
-                tempResult=backgroundWorker.execute(type,email,password,token).get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-
-        final String result = tempResult;
-        String statusTmp=null;
-        //Toast.makeText(LoginActivity.this, result, //Toast.LENGTH_SHORT).show();
 
         try {
-            JSONObject jsonObject = new JSONObject(result);
-            statusTmp=jsonObject.getString("status");
-            userId=jsonObject.getString("soid");
-            //Toast.makeText(LoginActivity.this, statusTmp, //Toast.LENGTH_SHORT).show();
-
-            //for (int i = 0; i < jsonObject.length(); i++) {
-            //   JSONObject jsonObject = jsonArray.getJSONObject(i);
-            //}
-        } catch (Exception e) {
+            result = backgroundWorker.execute(userType, email, password, token).get();
+            result=(result==null)?"":result;
+            Log.d("jasonobject", result+"");
+            jsonObject = new JSONObject(result);
+            status = jsonObject.getString("status");
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        final String statut = statusTmp;
+        if (status == null) {
+            status = "No internet";
+        }
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
                         // On complete call either onLoginSuccess or onLoginFailed
-                        if (statut.equals("success")) {
+                        switch (status) {
+                            case "success":
+                                Toast.makeText(LoginActivity.this, "success dès le premier coup", Toast.LENGTH_SHORT).show();
+                                try {
+                                    userId = jsonObject.getString("shid");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                onLoginSuccess();
+                                break;
+                            case "error":
+                                Toast.makeText(LoginActivity.this, "error while attempting to connect as a seller", Toast.LENGTH_SHORT).show();
 
-                            onLoginSuccess();
-                        } else if (statut.equals("error")){
-                            onLoginFailed();
+
+
+
+
+
+
+
+
+                                userType ="customer_login";
+                                try {
+                                    result = new BackgroundWorker(LoginActivity.this).execute(userType, email, password, token).get();
+                                    result=(result==null)?"":result;
+                                    jsonObject = new JSONObject(result);
+                                    status = jsonObject.getString("status");
+                                    Log.d("resultat 123",result+"" );
+                                } catch (ExecutionException e) {
+                                    e.printStackTrace();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                if (status == null) {
+                                    status = "No internet";
+                                }
+                                new android.os.Handler().postDelayed(
+                                        new Runnable() {
+                                            public void run() {
+                                                // On complete call either onLoginSuccess or onLoginFailed
+                                                switch (status) {
+                                                    case "success":
+                                                        try {
+                                                            userId = jsonObject.getString("cuid");
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                        onLoginSuccess();
+                                                        break;
+                                                    case "error":
+                                                        onLoginFailed();
+                                                        break;
+                                                    case "No internet":
+                                                        Toast.makeText(LoginActivity.this, "Aucune connexion internet n'est détectée !", Toast.LENGTH_SHORT).show();
+                                                        _loginButton.setEnabled(true);
+                                                        break;
+                                                }
+                                                progressDialog.dismiss();
+                                            }
+                                        }, 500);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                break;
+                            case "No internet":
+                                Toast.makeText(LoginActivity.this, "Aucune connexion internet n'est détectée !", Toast.LENGTH_SHORT).show();
+                                _loginButton.setEnabled(true);
+                                break;
                         }
                         // onLoginFailed();
 
                         progressDialog.dismiss();
-                        //Toast.maketext(LoginActivity.this, result, //Toast.LENGTH_SHORT).show();
-
-
-
                     }
                 }, 500);
     }
@@ -160,6 +235,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
 
@@ -194,9 +270,10 @@ public class LoginActivity extends AppCompatActivity {
                 .putString(USERID, userId)
                 .putString(EMAIL, email)
                 .putString(PASSWORD, password)
+                .putString(TYPE, userType)
                 .apply();
 
-        //Toast.makeText(this, "Sauvegardé, relancez l'application pour voir le résultat", //Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "user userType is: " + userType, Toast.LENGTH_SHORT).show();
 
 
 
@@ -205,13 +282,19 @@ public class LoginActivity extends AppCompatActivity {
         setResult(2, intentEMail);
         finish();
     }
-
     public void onLoginFailed() {
-        //Toast.makeText(getBaseContext(), "Login failed", //Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "identifiant ou mot de passe incorrect, réessayez !", Toast.LENGTH_LONG).show();
         //Toast.makeText(LoginActivity.this, "Login failed", //Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
-    }
 
+        token=null;
+        userId="";
+        email="";
+        password="";
+        userType ="seller_login";
+        result =null;
+        status = null;
+    }
     public boolean validate() {
         boolean valid = true;
 
@@ -231,7 +314,6 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             password_ET.setError(null);
         }
-
         return valid;
     }
 }

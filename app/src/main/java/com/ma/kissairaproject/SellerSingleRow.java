@@ -2,7 +2,7 @@ package com.ma.kissairaproject;
 
 import java.util.ArrayList;
 
-class SingleRow {
+class SellerSingleRow {
     String cmd;
     String full_name;
     int statusCode;
@@ -17,7 +17,7 @@ class SingleRow {
     String creation_date;
 
 
-    public SingleRow(){
+    public SellerSingleRow(){
         this.cmd="123";
         this.full_name="name surname";
         this.statusCode=R.drawable.ic_pending_ribbon;
@@ -33,18 +33,18 @@ class SingleRow {
         this.creation_date="2019-20-20";
     }
 
-    public SingleRow(String cmd,
-                     String full_name,
-                     int statusCode,
-                     String price,
-                     String afterCommaPrice,
-                     boolean recent,
-                     ArrayList<SingleRowProduct> detailCmdsList,
-                     String address,
-                     String phone_number,
-                     String customer_ship_date,
-                     String creation_time,
-                     String creation_date
+    public SellerSingleRow(String cmd,
+                           String full_name,
+                           int statusCode,
+                           String price,
+                           String afterCommaPrice,
+                           boolean recent,
+                           ArrayList<SingleRowProduct> detailCmdsList,
+                           String address,
+                           String phone_number,
+                           String customer_ship_date,
+                           String creation_time,
+                           String creation_date
 
     ) {
 

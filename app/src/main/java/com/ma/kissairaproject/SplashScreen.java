@@ -12,13 +12,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
-public class Slogan extends AppCompatActivity {
+public class SplashScreen extends AppCompatActivity {
     ImageView iv;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.slogan);
+        setContentView(R.layout.splash_screen);
         iv=findViewById(R.id.image);
         Drawable d= iv.getDrawable();
         if (d instanceof AnimatedVectorDrawable){

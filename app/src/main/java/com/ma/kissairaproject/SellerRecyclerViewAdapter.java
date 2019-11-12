@@ -2,9 +2,9 @@ package com.ma.kissairaproject;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,14 +30,15 @@ import java.util.concurrent.ExecutionException;
 
 import static android.content.Context.MODE_PRIVATE;
 
-class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
+class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewAdapter.MyViewHolder> {
 
+    private static final int TRANSITION_DURATION = 200;
     private ArrayList<SellerSingleRow> mDataset;
     private static int prev_expanded=-1;
     private Context context;
     private RecyclerView recycler;
-    private SharedPreferences sharedPreferences;
-    private String userType;
+    private String userId;
+    private boolean isOnClicksDisabled;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -91,17 +92,18 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyVie
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    RecyclerViewAdapter(ArrayList<SellerSingleRow> myDataset, Context c, String type) {
+    SellerRecyclerViewAdapter(ArrayList<SellerSingleRow> myDataset, Context c, String userId) {
         this.context = c;
         mDataset = myDataset;
-        userType=type;
+        this.userId=userId;
+        isOnClicksDisabled=false;
     }
     // Create new views (invoked by the layout manager)
     @NonNull
     @Override
-    public RecyclerViewAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SellerRecyclerViewAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // create a new view
-        View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row, parent, false);
+        View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row_seller, parent, false);
         return new MyViewHolder(v);
     }
 
@@ -154,20 +156,15 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyVie
                   Toast.makeText(holder.address.getContext(), holder.address.getText(), Toast.LENGTH_SHORT).show();
               }
         });
+        sellerButtonsProcessing(holder, position);
 
-        if (userType.equals("seller_login")) {
-            sellerButtonsProcessing(holder, position);
-        }else if (userType.equals("customer_login")){
-            customerButtonsProcessing(holder, position);
-        }
         holder.rv_detail_cmd.setLayoutManager(new LinearLayoutManager(context));
-
         holder.rv_detail_cmd.setAdapter(new RvCmdDetailsAdapter(mDataset.get(position).getDetailCmdsList()));
 
         final int GRAY = 0xFFf0f0f0;
         CardView cv= holder.itemView.findViewById(R.id.cv);
 
-        /**normally processing for recent itmes, but here we just set apart even and odd positions**/
+        /**normally processing for recent items, but here we just set apart even and odd positions**/
         if (mDataset.get(position).getRecent()) {
             cv.setCardBackgroundColor(GRAY);
         } else {
@@ -176,51 +173,58 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyVie
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /** expand singleRow */
-                LinearLayout linearLayout= v.findViewById(R.id.hidable_view);
-                final boolean visibility = linearLayout.getVisibility()==View.VISIBLE;
+                if (!isOnClicksDisabled) {
+                    //while here, disable all click listeners, because an exception will be made otherwise*/
+                    isOnClicksDisabled = true;
+                    /** expand singleRow */
+                    LinearLayout linearLayout = v.findViewById(R.id.hidable_view);
+                    final boolean visibility = linearLayout.getVisibility() == View.VISIBLE;
 
-                if (!visibility)
-                {
-                    //textView.setActivated(true);
-                    linearLayout.setVisibility(View.VISIBLE);
-                    Log.d("qsd", "prev_expanded: "+String.valueOf( prev_expanded));
+                    if (!visibility) {
+                        //textView.setActivated(true);
+                        linearLayout.setVisibility(View.VISIBLE);
+                        Log.d("qsd", "prev_expanded: " + String.valueOf(prev_expanded));
 
-                    if (prev_expanded!=-1 && prev_expanded!=position)
-                    {
-                        //recycler.findViewHolderForLayoutPosition(prev_expanded).itemView.setActivated(false);
-                        MyViewHolder vh= (MyViewHolder) recycler.findViewHolderForLayoutPosition(prev_expanded);
-                        Log.d("qsd", "prev_expanded: "+String.valueOf( prev_expanded));
-                        if (vh!=null){
-                            vh.visibilityState=0;
-                            vh.getView().findViewById(R.id.hidable_view).setVisibility(View.GONE);
-                            Log.d("vh", "NOT NULL");
+                        if (prev_expanded != -1 && prev_expanded != position) {
+                            //recycler.findViewHolderForLayoutPosition(prev_expanded).itemView.setActivated(false);
+                            MyViewHolder vh = (MyViewHolder) recycler.findViewHolderForLayoutPosition(prev_expanded);
+                            Log.d("qsd", "prev_expanded: " + String.valueOf(prev_expanded));
+                            if (vh != null) {
+                                vh.visibilityState = 0;
+                                vh.getView().findViewById(R.id.hidable_view).setVisibility(View.GONE);
+                                Log.d("vh", "NOT NULL");
 
-                        } else{
-                            Log.d("qsd", "NULL");
+                            } else {
+                                Log.d("qsd", "NULL");
+                            }
                         }
+                        prev_expanded = position;
+                    } else {
+                        Log.d("qsd", "the view is already visible");
+                        //holder.itemView.setActivated(false);
+                        linearLayout.setVisibility(View.GONE);
                     }
-                    prev_expanded = position;
+                    LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recycler.getLayoutManager();
+                    View someView = linearLayoutManager.getChildAt(0);
+                    int top = (someView == null) ? 0 : (someView.getTop() - linearLayoutManager.getPaddingTop());
+
+                    //                linearLayoutManager.scrollToPositionWithOffset(linearLayoutManager.findFirstVisibleItemPosition(), top);
+                    linearLayoutManager.scrollToPositionWithOffset(position, 0);
+
+
+                    //                holder.itemView.setOnClickListener(null);
+                    CustomTransition customTransition = new CustomTransition();
+                    customTransition.setDuration(TRANSITION_DURATION);
+
+                    TransitionManager.beginDelayedTransition(recycler, customTransition);
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            isOnClicksDisabled = false;
+                        }
+                    }, TRANSITION_DURATION);
                 }
-                else
-                {
-                    Log.d("qsd", "the view is already visible");
-                    //holder.itemView.setActivated(false);
-                    linearLayout.setVisibility(View.GONE);
-                }
-                LinearLayoutManager linearLayoutManager= (LinearLayoutManager) recycler.getLayoutManager();
-                View someView = linearLayoutManager.getChildAt(0);
-                int top = (someView == null) ? 0 : (someView.getTop() - linearLayoutManager.getPaddingTop());
-
-//                linearLayoutManager.scrollToPositionWithOffset(linearLayoutManager.findFirstVisibleItemPosition(), top);
-                linearLayoutManager.scrollToPositionWithOffset(position,0);
-
-
-//                holder.itemView.setOnClickListener(null);
-                AutoTransition autoTransition = new AutoTransition();
-                autoTransition.setDuration(200);
-                //autoTransition.excludeChildren(recycler, true);
-                TransitionManager.beginDelayedTransition(recycler,autoTransition);
             }
         });
     }
@@ -235,28 +239,30 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyVie
                 @Override
                 public void onClick(View view) {
                     BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
-                    if (sharedPreferences.contains("EMAIL") && sharedPreferences.contains("PASSWORD")) {
-                        String userId = sharedPreferences.getString("USERID", "");
-                        if (!userId.equals("")){
-                            try {
-                                String result=backgroundWorker.execute("post_status",userId,mDataset.get(position).getCmd(),"ready").get();
-                                JSONObject jsonObject = new JSONObject(result);
-                                if (jsonObject.getString("status").equals("success")){
-                                    // change status icon
-                                    holder.status.setImageResource(R.drawable.ic_ready_ribbon);
-                                    //make buttons gone
-                                    holder.bouton1.setVisibility(View.GONE);
-                                    holder.bouton2.setVisibility(View.GONE);
-                                    holder.bouton3.setVisibility(View.GONE);
-                                }
+                    if (!userId.equals("")){
+                        try {
+                            String result=backgroundWorker.execute("post_status",userId,mDataset.get(position).getCmd(),"ready").get();
+                            JSONObject jsonObject = new JSONObject(result);
+                            if (jsonObject.getString("status").equals("success")){
+                                // change status icon
+                                holder.status.setImageResource(R.drawable.ic_ready_ribbon);
+                                holder.bouton1.setVisibility(View.VISIBLE);
+                                holder.bouton1.setText("Livrer");
+                                setButtonBg(holder.bouton1, R.drawable.delivered_bg);
 
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                holder.bouton2.setVisibility(View.VISIBLE);
+                                holder.bouton2.setText("Annuler");
+                                setButtonBg(holder.bouton2,R.drawable.canceled_bg);
+
+                                holder.bouton3.setVisibility(View.GONE);
                             }
+
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -268,29 +274,25 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyVie
             holder.bouton2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SharedPreferences sharedPreferences =context.getSharedPreferences("USER_INFO", MODE_PRIVATE);
                     BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
-                    if (sharedPreferences.contains("EMAIL") && sharedPreferences.contains("PASSWORD")) {
-                        String userId = sharedPreferences.getString("USERID", "");
-                        if (!userId.equals("")){
-                            try {
-                                String result=backgroundWorker.execute("post_status",userId,mDataset.get(position).getCmd(),"canceled").get();
-                                JSONObject jsonObject = new JSONObject(result);
-                                if (jsonObject.getString("status").equals("success")){
-                                    // change status icon
-                                    holder.status.setImageResource(R.drawable.ic_canceled_ribbon);
-                                    //make buttons gone
-                                    holder.bouton1.setVisibility(View.GONE);
-                                    holder.bouton2.setVisibility(View.GONE);
-                                    holder.bouton3.setVisibility(View.GONE);
-                                }
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    if (!userId.equals("")){
+                        try {
+                            String result=backgroundWorker.execute("post_status",userId,mDataset.get(position).getCmd(),"canceled").get();
+                            JSONObject jsonObject = new JSONObject(result);
+                            if (jsonObject.getString("status").equals("success")){
+                                // change status icon
+                                holder.status.setImageResource(R.drawable.ic_canceled_ribbon);
+                                //make buttons gone
+                                holder.bouton1.setVisibility(View.GONE);
+                                holder.bouton2.setVisibility(View.GONE);
+                                holder.bouton3.setVisibility(View.GONE);
                             }
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -300,45 +302,35 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyVie
 
             holder.bouton3.setVisibility(View.GONE);
         }
-        /**processing buttons in a single item when status is something else*/
-        else if (mDataset.get(position).getStatusCode()!= R.drawable.ic_pending_ribbon){
 
-            holder.bouton1.setVisibility(View.GONE);
-            holder.bouton2.setVisibility(View.GONE);
-            holder.bouton3.setVisibility(View.GONE);
-        }
-    }
-    private void customerButtonsProcessing(MyViewHolder holder, int position) {
         /**processing buttons in a single item when status is ready*/
         if (mDataset.get(position).getStatusCode() == R.drawable.ic_ready_ribbon) {
             holder.bouton1.setVisibility(View.VISIBLE);
-            holder.bouton1.setText("Reçu");
-            setButtonBg(holder.bouton1, R.drawable.ready_bg);
+            holder.bouton1.setText("Livrer");
+            setButtonBg(holder.bouton1, R.drawable.delivered_bg);
             holder.bouton1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
-                    if (sharedPreferences.contains("EMAIL") && sharedPreferences.contains("PASSWORD")) {
-                        String userId = sharedPreferences.getString("USERID", "");
-                        if (!userId.equals("")){
-                            try {
-                                String result=backgroundWorker.execute("post_status", userId, mDataset.get(position).getCmd(),"received").get();
-                                JSONObject jsonObject = new JSONObject(result);
-                                if (jsonObject.getString("status").equals("success")){
-                                    // change status icon
-                                    holder.status.setImageResource(R.drawable.ic_received_ribbon);
-                                    //make buttons gone
-                                    holder.bouton1.setVisibility(View.GONE);
-                                    holder.bouton2.setVisibility(View.GONE);
-                                    holder.bouton3.setVisibility(View.GONE);
-                                }
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    if (!userId.equals("")){
+                        try {
+                            String result=backgroundWorker.execute("post_status",userId,mDataset.get(position).getCmd(),"delivered").get();
+                            JSONObject jsonObject = new JSONObject(result);
+                            if (jsonObject.getString("status").equals("success")){
+                                // change status icon
+                                holder.status.setImageResource(R.drawable.ic_delivered_ribbon);
+                                //make buttons gone
+                                holder.bouton1.setVisibility(View.GONE);
+                                holder.bouton2.setVisibility(View.GONE);
+                                holder.bouton3.setVisibility(View.GONE);
                             }
+
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -346,80 +338,54 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyVie
             holder.bouton2.setVisibility(View.VISIBLE);
             holder.bouton2.setText("Annuler");
             setButtonBg(holder.bouton2,R.drawable.canceled_bg);
+
             holder.bouton2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SharedPreferences sharedPreferences =context.getSharedPreferences("USER_INFO", MODE_PRIVATE);
                     BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
-                    if (sharedPreferences.contains("EMAIL") && sharedPreferences.contains("PASSWORD")) {
-                        String userId = sharedPreferences.getString("USERID", "");
-                        if (!userId.equals("")){
-                            try {
-                                String result=backgroundWorker.execute("post_status",userId,mDataset.get(position).getCmd(),"canceled").get();
-                                JSONObject jsonObject = new JSONObject(result);
-                                if (jsonObject.getString("status").equals("success")){
-                                    // change status icon
-                                    holder.status.setImageResource(R.drawable.ic_canceled_ribbon);
-                                    //make buttons gone
-                                    holder.bouton1.setVisibility(View.GONE);
-                                    holder.bouton2.setVisibility(View.GONE);
-                                    holder.bouton3.setVisibility(View.GONE);
-                                }
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    if (!userId.equals("")){
+                        try {
+                            String result=backgroundWorker.execute("post_status",userId,mDataset.get(position).getCmd(),"canceled").get();
+                            JSONObject jsonObject = new JSONObject(result);
+                            if (jsonObject.getString("status").equals("success")){
+                                // change status icon
+                                holder.status.setImageResource(R.drawable.ic_canceled_ribbon);
+                                //make buttons gone
+                                holder.bouton1.setVisibility(View.GONE);
+                                holder.bouton2.setVisibility(View.GONE);
+                                holder.bouton3.setVisibility(View.GONE);
                             }
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
             });
+
+
+
             holder.bouton3.setVisibility(View.GONE);
         }
-        /**processing buttons in a single item when status is something else*/
-        else if (mDataset.get(position).getStatusCode()== R.drawable.ic_canceled_ribbon  || mDataset.get(position).getStatusCode()== R.drawable.ic_received_ribbon){
+
+        /**processing buttons in a single item when status is delivered or canceled*/
+        else if (mDataset.get(position).getStatusCode()== R.drawable.ic_delivered_ribbon || mDataset.get(position).getStatusCode()== R.drawable.ic_canceled_ribbon){
 
             holder.bouton1.setVisibility(View.GONE);
             holder.bouton2.setVisibility(View.GONE);
             holder.bouton3.setVisibility(View.GONE);
-        } else {//if status is everithing apart from canceled and ready
-            holder.bouton1.setVisibility(View.VISIBLE);
-            holder.bouton1.setText("Annuler");
-            setButtonBg(holder.bouton1,R.drawable.canceled_bg);
-            holder.bouton1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    SharedPreferences sharedPreferences =context.getSharedPreferences("USER_INFO", MODE_PRIVATE);
-                    BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
-                    if (sharedPreferences.contains("EMAIL") && sharedPreferences.contains("PASSWORD")) {
-                        String userId = sharedPreferences.getString("USERID", "");
-                        if (!userId.equals("")){
-                            try {
-                                String result=backgroundWorker.execute("post_status",userId,mDataset.get(position).getCmd(),"canceled").get();
-                                JSONObject jsonObject = new JSONObject(result);
-                                if (jsonObject.getString("status").equals("success")){
-                                    // change status icon
-                                    holder.status.setImageResource(R.drawable.ic_canceled_ribbon);
-                                    //make buttons gone
-                                    holder.bouton1.setVisibility(View.GONE);
-                                    holder.bouton2.setVisibility(View.GONE);
-                                    holder.bouton3.setVisibility(View.GONE);
-                                }
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            });
-            holder.bouton2.setVisibility(View.GONE);
-            holder.bouton3.setVisibility(View.GONE);
+        }
+        else {
+            if (mDataset.get(position).getStatusCode()==R.drawable.ic_received_ribbon) {
+                Log.d("status_problem", "received status is present but not allowed here !");
+//                Toast.makeText(holder.bouton1.getContext(), "", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.d("status_problem", "Unknown status code");
+//                Toast.makeText(holder.bouton1.getContext(), "Unknown status code", Toast.LENGTH_SHORT).show();
+            }
         }
     }
     // Return the size of your dataset (invoked by the layout manager)
@@ -437,27 +403,8 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyVie
         bouton.setPadding(pl, pt, pr, pb);
     }
 }
-class RvCmdDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+class RvCmdDetailsAdapter extends RecyclerView.Adapter<RvCmdDetailsAdapter.MyViewHolder> {
     private ArrayList<SingleRowProduct> mDataSet;
-    private final int HEAD_TYPE=1;
-    private final int CONTENT_TYPE=2;
-    private final int SHOP_TYPE=3;
-    public static class MyHeadViewHolder extends RecyclerView.ViewHolder {//Why static?
-        TextView label;
-        TextView qty;
-        TextView price;
-        View v;
-        MyHeadViewHolder(View view) {
-            super(view);
-            this.label = view.findViewById(R.id.label);
-            this.qty = view.findViewById(R.id.qty);
-            this.price = view.findViewById(R.id.price);
-            this.v=view;
-        }
-        View getView(){
-            return v;
-        }
-    }
     public static class MyViewHolder extends RecyclerView.ViewHolder {//Why static?
         TextView label;
         TextView qty;
@@ -478,53 +425,25 @@ class RvCmdDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             return v;
         }
     }
-    public static class MyShopHolder extends RecyclerView.ViewHolder {//Why static?
-        TextView shop_name;
-        View v;
-        MyShopHolder(View view) {
-            super(view);
-            this.shop_name = view.findViewById(R.id.label);
-            this.v=view;
-        }
-        View getView(){
-            return v;
-        }
-    }
-    @Override
-    public int getItemViewType(int position) {
-        if (position==0) {
-            return HEAD_TYPE;
 
-        } else {
-            return CONTENT_TYPE;
-        }
-    }
     RvCmdDetailsAdapter(ArrayList<SingleRowProduct> list){
         mDataSet=list;
         //Log.d("mDataSet", String.valueOf(mDataSet.get(1).getArticle()));
     }
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType==HEAD_TYPE){
-            View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row_head_of_detail_cmd, parent, false);
-            MyHeadViewHolder vh = new MyHeadViewHolder(v);
-            return (MyHeadViewHolder) vh;
-        } else{
+    public RvCmdDetailsAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row_detail_cmd, parent, false);
             MyViewHolder vh = new MyViewHolder(v);
-            return (MyViewHolder) vh;
-        }
+            return vh;
     }
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (getItemViewType(position)==CONTENT_TYPE){
-            ((MyViewHolder) holder).label.setText(mDataSet.get(position).getArticle());
-            ((MyViewHolder) holder).qty.setText(mDataSet.get(position).getQuantity());
-            ((MyViewHolder) holder).qty2.setText(mDataSet.get(position).getQuantity2());
-            ((MyViewHolder) holder).price.setText(mDataSet.get(position).getPrice());
-            ((MyViewHolder) holder).price2.setText(mDataSet.get(position).getPrice2());
-        }
+    public void onBindViewHolder(@NonNull RvCmdDetailsAdapter.MyViewHolder holder, int position) {
+            holder.label.setText(mDataSet.get(position).getArticle());
+            holder.qty.setText(mDataSet.get(position).getQuantity());
+            holder.qty2.setText(mDataSet.get(position).getQuantity2());
+            holder.price.setText(mDataSet.get(position).getPrice());
+            holder.price2.setText(mDataSet.get(position).getPrice2());
     }
     @Override
     public int getItemCount() {

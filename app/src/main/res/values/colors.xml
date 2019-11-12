@@ -5,7 +5,9 @@
     <color name="primary">#E43F3F</color>
     <color name="primary_dark">#E12929</color>
     <color name="primary_darker">#CC1D1D</color>
-    <color name="accent">#FFFFFF</color>
+    <color name="accent">#B35555</color>
+    <color name="accent2">#F2C14E</color>
+    <color name="accent3">#DE7B02</color>
 
     <color name="black">#000000</color>
     <color name="jet">#222222</color>
@@ -17,10 +19,11 @@
     <color name="iron">#CCCCCC</color>
     <color name="white">#FFFFFF</color>
     <color name="gray">#767171</color>
-    <color name="green">#388E3C</color>
-    <color name="light_green">#8BC34A</color>
-    <color name="brown">#966D38</color>
-    <color name="yellow">#FBC02D</color>
+    <color name="ready">#388E3C</color>
+    <color name="prepared">#8BC34A</color>
+    <color name="canceled">#966D38</color>
+    <color name="pending">#FBC02D</color>
+    <color name="received">#1AC8A9</color>
 
 
 </resources>
