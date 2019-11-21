@@ -9,17 +9,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
 
 import org.json.JSONException;
@@ -28,13 +31,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import static android.content.Context.MODE_PRIVATE;
-
 class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewAdapter.MyViewHolder> {
 
     private static final int TRANSITION_DURATION = 200;
     private ArrayList<SellerSingleRow> mDataset;
-    private static int prev_expanded=-1;
+    private static long prev_expanded=-1;
     private Context context;
     private RecyclerView recycler;
     private String userId;
@@ -44,15 +45,21 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class MyViewHolder extends RecyclerView.ViewHolder {
+
+        ConstraintLayout container;
+
         public TextView cmd;
-        public ImageView status;
+        public ImageView statusIV;
+        View   statusRibbon;
+        TextView statusTV;
         public TextView price;
         public TextView afterCommaPrice;
         public ImageView callButton;
         public RecyclerView rv_detail_cmd;
         TextView address;
         String phone_number;
-        TextView customer_ship_date;
+        TextView shipTime;
+        TextView shipDate;
         TextView creation_time;
         TextView creation_date;
         TextView full_name;
@@ -60,57 +67,60 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
 
         public TextView bouton1;
         public TextView bouton2;
-        public TextView bouton3;
-        public int visibilityState=0;
+
         View v;
 
 
         public MyViewHolder(View view) {
+
             super(view);
+
+            this.container= (ConstraintLayout) view.findViewById(R.id.hidable_view);
+
             this.cmd = view.findViewById(R.id.commande);
-            this.status = view.findViewById(R.id.status);
+            this.statusIV = view.findViewById(R.id.status_iv);
+            this.statusRibbon=view.findViewById(R.id.status_ribbon);
+            this.statusTV=view.findViewById(R.id.status_tv);
             this.price = view.findViewById(R.id.price);
             this.afterCommaPrice = view.findViewById(R.id.afterCommaPrice);
 
             this.bouton1 = view.findViewById(R.id.txtView1);
             this.bouton2 = view.findViewById(R.id.txtView2);
-            this.bouton3 = view.findViewById(R.id.txtView3);
             this.callButton = view.findViewById(R.id.call);
 
             this.address = view.findViewById(R.id.address);
-            this.customer_ship_date = view.findViewById(R.id.customer_ship_date);
+            this.shipTime = view.findViewById(R.id.customer_ship_time);
+            this.shipDate = view.findViewById(R.id.customer_ship_date);
             this.creation_date = view.findViewById(R.id.creation_date);
             this.creation_time = view.findViewById(R.id.creation_time);
             this.full_name = view.findViewById(R.id.full_name);
             this.rv_detail_cmd = view.findViewById(R.id.rv_detail_cmd);
             this.v = view;
         }
-
         View getView() {
             return v;
         }
     }
-
     // Provide a suitable constructor (depends on the kind of dataset)
     SellerRecyclerViewAdapter(ArrayList<SellerSingleRow> myDataset, Context c, String userId) {
         this.context = c;
         mDataset = myDataset;
         this.userId=userId;
         isOnClicksDisabled=false;
+        this.setHasStableIds(true);
     }
     // Create new views (invoked by the layout manager)
     @NonNull
     @Override
     public SellerRecyclerViewAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // create a new view
-        View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row_seller, parent, false);
-        return new MyViewHolder(v);
+        View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row_seller2, parent, false);
+        MyViewHolder myViewHolder = new MyViewHolder(v);
+        return myViewHolder;
     }
-
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-
         recycler = recyclerView;
     }
 
@@ -120,26 +130,63 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
 //        holder.setIsRecyclable(false);
-//        recycler.getRecycledViewPool().setMaxRecycledViews(holder.getItemViewType(), 0);
+//        AsyncTask.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                //TODO your background code
+//            }
+//        });
+        holder.container.setAnimation(AnimationUtils.loadAnimation(context,R.anim.fade_scale_animation));
+
 
         holder.cmd.setText(mDataset.get(position).getCmd());
-        holder.status.setImageResource(mDataset.get(position).getStatusCode());
+        holder.statusIV.setImageResource(mDataset.get(position).getStatusCode());
+        switch (mDataset.get(position).getStatusCode()){
+
+            case    R.drawable.ic_pending_icon:
+                holder.statusTV.setText("EN COURS");
+                holder.statusTV.setTextColor(ContextCompat.getColor(holder.statusIV.getContext(),R.color.pending));
+                holder.statusRibbon.setBackgroundColor(ContextCompat.getColor(holder.statusRibbon.getContext(), R.color.pending));
+                break;
+            case R.drawable.ic_ready_icon:
+                holder.statusTV.setText("PRÊT");
+                holder.statusTV.setTextColor(ContextCompat.getColor(holder.statusIV.getContext(),R.color.ready));
+                holder.statusRibbon.setBackgroundColor(ContextCompat.getColor(holder.statusRibbon.getContext(), R.color.ready));
+                break;
+            case R.drawable.ic_delivered_icon:
+                holder.statusTV.setText("Livré");
+                holder.statusTV.setTextColor(ContextCompat.getColor(holder.statusIV.getContext(),R.color.delivered));
+                holder.statusRibbon.setBackgroundColor(ContextCompat.getColor(holder.statusRibbon.getContext(), R.color.delivered));
+                break;
+            case R.drawable.ic_received_icon:
+                mDataset.get(position).setStatusCode(R.drawable.ic_delivered_icon);
+                holder.statusIV.setImageResource(R.drawable.ic_delivered_icon);
+                holder.statusTV.setText("Livré");
+                holder.statusTV.setTextColor(ContextCompat.getColor(holder.statusIV.getContext(),R.color.delivered));
+                holder.statusRibbon.setBackgroundColor(ContextCompat.getColor(holder.statusRibbon.getContext(), R.color.delivered));
+                break;
+            case R.drawable.ic_canceled_icon:
+                holder.statusTV.setText("Annulé");
+                holder.statusTV.setTextColor(ContextCompat.getColor(holder.statusIV.getContext(),R.color.canceled));
+                holder.statusRibbon.setBackgroundColor(ContextCompat.getColor(holder.statusRibbon.getContext(), R.color.canceled));
+                break;
+        }
         holder.price.setText(mDataset.get(position).getPrice());
         holder.afterCommaPrice.setText(mDataset.get(position).getAfterCommaPrice());
 
         holder.address.setText(mDataset.get(position).getAddress());
         holder.creation_time.setText(mDataset.get(position).getCreation_time());
         holder.creation_date.setText(mDataset.get(position).getCreation_date());
-        holder.customer_ship_date.setText(mDataset.get(position).getCustomer_ship_date());
+        holder.shipTime.setText(mDataset.get(position).getShip_time());
+        holder.shipDate.setText(mDataset.get(position).getShip_date());
         holder.full_name.setText(mDataset.get(position).getFull_name());
         holder.phone_number=mDataset.get(position).getPhone_number();
-
-
-        if (holder.visibilityState==1){
-            holder.getView().findViewById(R.id.hidable_view).setVisibility(View.VISIBLE);
+        Log.d("holder.getItemId()",holder.getItemId()+"hasStableIds"+ this.hasStableIds());
+        if (holder.getItemId()==prev_expanded){
+            displayHidableViewOnRegistred(holder, holder.getLayoutPosition());
+            Log.d("display_hidable", prev_expanded+ "");
         } else  {
             holder.getView().findViewById(R.id.hidable_view).setVisibility(View.GONE);
-
         }
         holder.callButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,14 +203,8 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
                   Toast.makeText(holder.address.getContext(), holder.address.getText(), Toast.LENGTH_SHORT).show();
               }
         });
-        sellerButtonsProcessing(holder, position);
-
-        holder.rv_detail_cmd.setLayoutManager(new LinearLayoutManager(context));
-        holder.rv_detail_cmd.setAdapter(new RvCmdDetailsAdapter(mDataset.get(position).getDetailCmdsList()));
-
         final int GRAY = 0xFFf0f0f0;
         CardView cv= holder.itemView.findViewById(R.id.cv);
-
         /**normally processing for recent items, but here we just set apart even and odd positions**/
         if (mDataset.get(position).getRecent()) {
             cv.setCardBackgroundColor(GRAY);
@@ -173,97 +214,137 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isOnClicksDisabled) {
-                    //while here, disable all click listeners, because an exception will be made otherwise*/
-                    isOnClicksDisabled = true;
-                    /** expand singleRow */
-                    LinearLayout linearLayout = v.findViewById(R.id.hidable_view);
-                    final boolean visibility = linearLayout.getVisibility() == View.VISIBLE;
-
-                    if (!visibility) {
-                        //textView.setActivated(true);
-                        linearLayout.setVisibility(View.VISIBLE);
-                        Log.d("qsd", "prev_expanded: " + String.valueOf(prev_expanded));
-
-                        if (prev_expanded != -1 && prev_expanded != position) {
-                            //recycler.findViewHolderForLayoutPosition(prev_expanded).itemView.setActivated(false);
-                            MyViewHolder vh = (MyViewHolder) recycler.findViewHolderForLayoutPosition(prev_expanded);
-                            Log.d("qsd", "prev_expanded: " + String.valueOf(prev_expanded));
-                            if (vh != null) {
-                                vh.visibilityState = 0;
-                                vh.getView().findViewById(R.id.hidable_view).setVisibility(View.GONE);
-                                Log.d("vh", "NOT NULL");
-
-                            } else {
-                                Log.d("qsd", "NULL");
-                            }
-                        }
-                        prev_expanded = position;
-                    } else {
-                        Log.d("qsd", "the view is already visible");
-                        //holder.itemView.setActivated(false);
-                        linearLayout.setVisibility(View.GONE);
-                    }
-                    LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recycler.getLayoutManager();
-                    View someView = linearLayoutManager.getChildAt(0);
-                    int top = (someView == null) ? 0 : (someView.getTop() - linearLayoutManager.getPaddingTop());
-
-                    //                linearLayoutManager.scrollToPositionWithOffset(linearLayoutManager.findFirstVisibleItemPosition(), top);
-                    linearLayoutManager.scrollToPositionWithOffset(position, 0);
-
-
-                    //                holder.itemView.setOnClickListener(null);
-                    CustomTransition customTransition = new CustomTransition();
-                    customTransition.setDuration(TRANSITION_DURATION);
-
-                    TransitionManager.beginDelayedTransition(recycler, customTransition);
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            isOnClicksDisabled = false;
-                        }
-                    }, TRANSITION_DURATION);
-                }
+                displayHidableViewonClick(holder, position);
             }
         });
     }
-    private void sellerButtonsProcessing(MyViewHolder holder, int position) {
+    private void displayHidableViewonClick(MyViewHolder holder, int position) {
+        if (!isOnClicksDisabled) {
+            //while here, disable all click listeners, because an exception will be made otherwise*/
+            isOnClicksDisabled = true;
 
-        /**processing buttons in a single item when status is pending*/
-        if (mDataset.get(position).getStatusCode() == R.drawable.ic_pending_ribbon) {
+
+            /** expand singleRow */
+            ConstraintLayout constraintLayout = holder.getView().findViewById(R.id.hidable_view);
+            final boolean visibility = constraintLayout.getVisibility() == View.VISIBLE;
+            if (!visibility) {
+                //textView.setActivated(true);
+                constraintLayout.setVisibility(View.VISIBLE);
+                //process buttons because this item view is henceforth visible
+                sellerButtonsProcessing(holder, position);
+                //load data only when this itemView become visible:
+
+                holder.rv_detail_cmd.setLayoutManager(new LinearLayoutManager(context));
+                holder.rv_detail_cmd.setAdapter(new RvCmdDetailsAdapter(mDataset.get(position).getDetailCmdsList()));
+
+                if (prev_expanded != -1 && prev_expanded != holder.getItemId()) {
+                    //recycler.findViewHolderForLayoutPosition(prev_expanded).itemView.setActivated(false);
+                    MyViewHolder vh = (MyViewHolder) recycler.findViewHolderForItemId(prev_expanded);
+                    if (vh != null) {
+                        vh.getView().findViewById(R.id.hidable_view).setVisibility(View.GONE);
+                    } else {
+                        Log.d("qsd", "NULL");
+                    }
+                }
+                prev_expanded = holder.getItemId();
+            } else {
+                Log.d("qsd", "the view is already visible");
+                //holder.itemView.setActivated(false);
+                prev_expanded=-1;
+                constraintLayout.setVisibility(View.GONE);
+            }
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recycler.getLayoutManager();
+//            View someView = linearLayoutManager.getChildAt(0);
+//            int top = (someView == null) ? 0 : (someView.getTop() - linearLayoutManager.getPaddingTop());
+            //                linearLayoutManager.scrollToPositionWithOffset(linearLayoutManager.findFirstVisibleItemPosition(), top);
+            linearLayoutManager.scrollToPositionWithOffset(position, 0);
+            //                holder.itemView.setOnClickListener(null);
+            CustomTransition customTransition = new CustomTransition();
+            customTransition.setDuration(TRANSITION_DURATION);
+
+            TransitionManager.beginDelayedTransition(recycler, customTransition);
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isOnClicksDisabled = false;
+                }
+            }, TRANSITION_DURATION);
+        }
+    }
+    private void displayHidableViewOnRegistred(MyViewHolder holder, int position) {
+
+            /** expand singleRow */
+            ConstraintLayout constraintLayout = holder.getView().findViewById(R.id.hidable_view);
+            final boolean visibility = constraintLayout.getVisibility() == View.VISIBLE;
+            if (!visibility) {
+                //textView.setActivated(true);
+                constraintLayout.setVisibility(View.VISIBLE);
+                //process buttons because this item view is henceforth visible
+                sellerButtonsProcessing(holder, position);
+                //load data only when this itemView become visible:
+
+                holder.rv_detail_cmd.setLayoutManager(new LinearLayoutManager(context));
+                holder.rv_detail_cmd.setAdapter(new RvCmdDetailsAdapter(mDataset.get(position).getDetailCmdsList()));
+
+                Log.d("qsd", "prev_expanded: " + String.valueOf(prev_expanded));
+
+                if (prev_expanded != -1 && prev_expanded != holder.getItemId()) {
+                    //recycler.findViewHolderForLayoutPosition(prev_expanded).itemView.setActivated(false);
+                    MyViewHolder vh = (MyViewHolder) recycler.findViewHolderForItemId(prev_expanded);
+                    Log.d("qsd", "prev_expanded: " + String.valueOf(prev_expanded));
+                    if (vh != null) {
+                        vh.getView().findViewById(R.id.hidable_view).setVisibility(View.GONE);
+                        Log.d("vh", "NOT NULL");
+
+                    } else {
+                        Log.d("qsd", "NULL");
+                    }
+                }
+                prev_expanded = holder.getItemId();
+            } else {
+                prev_expanded=-1;
+                constraintLayout.setVisibility(View.GONE);
+            }
+    }
+    private void sellerButtonsProcessing(MyViewHolder holder, int position) {
+        Log.d("test123", "ze");
+        /**processing buttons in a single item when statusIV is pending*/
+        if (mDataset.get(position).getStatusCode() == R.drawable.ic_pending_icon) {
             holder.bouton1.setVisibility(View.VISIBLE);
-            holder.bouton1.setText("Prête");
+            holder.bouton1.setText("Prêt");
+            holder.statusTV.setTextColor(ContextCompat.getColor(holder.statusIV.getContext(),R.color.pending));
+
             setButtonBg(holder.bouton1, R.drawable.ready_bg);
             holder.bouton1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    // change statusIV icon
+                    holder.statusIV.setImageResource(R.drawable.ic_ready_icon);
+                    holder.statusTV.setText("Prêt");
+                    holder.statusTV.setTextColor(ContextCompat.getColor(holder.statusIV.getContext(),R.color.ready));
+
+                    holder.statusRibbon.setBackgroundColor(ContextCompat.getColor(holder.statusRibbon.getContext(), R.color.ready));
+                    mDataset.get(position).setStatusCode(R.drawable.ic_ready_icon);
+                    holder.bouton1.setOnClickListener(null);
+                    holder.bouton2.setOnClickListener(null);
+                    Log.d("inside" , "pending");
+                    sellerButtonsProcessing(holder, position);
+
+
                     BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
-                    if (!userId.equals("")){
-                        try {
-                            String result=backgroundWorker.execute("post_status",userId,mDataset.get(position).getCmd(),"ready").get();
-                            JSONObject jsonObject = new JSONObject(result);
-                            if (jsonObject.getString("status").equals("success")){
-                                // change status icon
-                                holder.status.setImageResource(R.drawable.ic_ready_ribbon);
-                                holder.bouton1.setVisibility(View.VISIBLE);
-                                holder.bouton1.setText("Livrer");
-                                setButtonBg(holder.bouton1, R.drawable.delivered_bg);
-
-                                holder.bouton2.setVisibility(View.VISIBLE);
-                                holder.bouton2.setText("Annuler");
-                                setButtonBg(holder.bouton2,R.drawable.canceled_bg);
-
-                                holder.bouton3.setVisibility(View.GONE);
-                            }
-
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                    try {
+                        String result=backgroundWorker.execute("post_status_seller",userId,mDataset.get(position).getCmd(),"ready").get();
+                        JSONObject jsonObject = new JSONObject(result);
+                        if (!jsonObject.getString("statusIV").equals("success")){
+                            //TODO: setting back the previous buttons statusIV
                         }
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
             });
@@ -274,64 +355,75 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
             holder.bouton2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    // change statusIV icon
+                    holder.statusIV.setImageResource(R.drawable.ic_canceled_icon);
+                    holder.statusTV.setText("Annulé");
+                    holder.statusTV.setTextColor(ContextCompat.getColor(holder.statusIV.getContext(),R.color.canceled));
+
+                    holder.statusRibbon.setBackgroundColor(ContextCompat.getColor(holder.statusRibbon.getContext(), R.color.canceled));
+                    mDataset.get(position).setStatusCode(R.drawable.ic_canceled_icon);
+                    holder.bouton1.setOnClickListener(null);
+                    holder.bouton2.setOnClickListener(null);
+                    Log.d("inside" , "pending");
+
+                    sellerButtonsProcessing(holder, position);
+
+
                     BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
-                    if (!userId.equals("")){
-                        try {
-                            String result=backgroundWorker.execute("post_status",userId,mDataset.get(position).getCmd(),"canceled").get();
-                            JSONObject jsonObject = new JSONObject(result);
-                            if (jsonObject.getString("status").equals("success")){
-                                // change status icon
-                                holder.status.setImageResource(R.drawable.ic_canceled_ribbon);
-                                //make buttons gone
-                                holder.bouton1.setVisibility(View.GONE);
-                                holder.bouton2.setVisibility(View.GONE);
-                                holder.bouton3.setVisibility(View.GONE);
-                            }
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                    try {
+                        String result=backgroundWorker.execute("post_status_seller",userId,mDataset.get(position).getCmd(),"canceled").get();
+                        JSONObject jsonObject = new JSONObject(result);
+                        if (!jsonObject.getString("statusIV").equals("success")){
+                            //TODO: setting back the previous buttons statusIV
                         }
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
             });
 
 
 
-            holder.bouton3.setVisibility(View.GONE);
         }
 
-        /**processing buttons in a single item when status is ready*/
-        if (mDataset.get(position).getStatusCode() == R.drawable.ic_ready_ribbon) {
+        /**processing buttons in a single item when statusIV is ready*/
+        if (mDataset.get(position).getStatusCode() == R.drawable.ic_ready_icon) {
             holder.bouton1.setVisibility(View.VISIBLE);
             holder.bouton1.setText("Livrer");
             setButtonBg(holder.bouton1, R.drawable.delivered_bg);
             holder.bouton1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
-                    if (!userId.equals("")){
-                        try {
-                            String result=backgroundWorker.execute("post_status",userId,mDataset.get(position).getCmd(),"delivered").get();
-                            JSONObject jsonObject = new JSONObject(result);
-                            if (jsonObject.getString("status").equals("success")){
-                                // change status icon
-                                holder.status.setImageResource(R.drawable.ic_delivered_ribbon);
-                                //make buttons gone
-                                holder.bouton1.setVisibility(View.GONE);
-                                holder.bouton2.setVisibility(View.GONE);
-                                holder.bouton3.setVisibility(View.GONE);
-                            }
+                    // change statusIV icon
+                    holder.statusIV.setImageResource(R.drawable.ic_delivered_icon);
+                    holder.statusTV.setText("Livré");
+                    holder.statusTV.setTextColor(ContextCompat.getColor(holder.statusIV.getContext(),R.color.delivered));
 
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                    holder.statusRibbon.setBackgroundColor(ContextCompat.getColor(holder.statusRibbon.getContext(), R.color.delivered));
+                    mDataset.get(position).setStatusCode(R.drawable.ic_delivered_icon);
+                    holder.bouton1.setOnClickListener(null);
+                    holder.bouton2.setOnClickListener(null);
+                    Log.d("inside" , "ready");
+                    sellerButtonsProcessing(holder, position);
+
+                    BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
+                    try {
+                        String result=backgroundWorker.execute("post_status_seller",userId,mDataset.get(position).getCmd(),"delivered").get();
+                        JSONObject jsonObject = new JSONObject(result);
+                        if (!jsonObject.getString("statusIV").equals("success")){
+                            //TODO: setting back the previous buttons statusIV
                         }
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
             });
@@ -342,50 +434,45 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
             holder.bouton2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    // change statusIV icon
+                    holder.statusIV.setImageResource(R.drawable.ic_canceled_icon);
+                    holder.statusTV.setText("Annulé");
+                    holder.statusTV.setTextColor(ContextCompat.getColor(holder.statusIV.getContext(),R.color.canceled));
+                    holder.statusRibbon.setBackgroundColor(ContextCompat.getColor(holder.statusRibbon.getContext(), R.color.canceled));
+                    mDataset.get(position).setStatusCode(R.drawable.ic_canceled_icon);
+                    holder.bouton1.setOnClickListener(null);
+                    holder.bouton2.setOnClickListener(null);
+                    Log.d("inside" , "ready");
+
+                    sellerButtonsProcessing(holder, position);
+
                     BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
-                    if (!userId.equals("")){
-                        try {
-                            String result=backgroundWorker.execute("post_status",userId,mDataset.get(position).getCmd(),"canceled").get();
-                            JSONObject jsonObject = new JSONObject(result);
-                            if (jsonObject.getString("status").equals("success")){
-                                // change status icon
-                                holder.status.setImageResource(R.drawable.ic_canceled_ribbon);
-                                //make buttons gone
-                                holder.bouton1.setVisibility(View.GONE);
-                                holder.bouton2.setVisibility(View.GONE);
-                                holder.bouton3.setVisibility(View.GONE);
-                            }
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                    try {
+                        String result=backgroundWorker.execute("post_status_seller",userId,mDataset.get(position).getCmd(),"canceled").get();
+                        JSONObject jsonObject = new JSONObject(result);
+                        if (!jsonObject.getString("statusIV").equals("success")){
+                            //TODO: setting back the previous buttons statusIV
                         }
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
             });
-
-
-
-            holder.bouton3.setVisibility(View.GONE);
         }
 
-        /**processing buttons in a single item when status is delivered or canceled*/
-        else if (mDataset.get(position).getStatusCode()== R.drawable.ic_delivered_ribbon || mDataset.get(position).getStatusCode()== R.drawable.ic_canceled_ribbon){
+        /**processing buttons in a single item when statusIV is delivered or canceled*/
+        else if (mDataset.get(position).getStatusCode()== R.drawable.ic_delivered_icon || mDataset.get(position).getStatusCode()== R.drawable.ic_canceled_icon){
 
             holder.bouton1.setVisibility(View.GONE);
             holder.bouton2.setVisibility(View.GONE);
-            holder.bouton3.setVisibility(View.GONE);
         }
         else {
-            if (mDataset.get(position).getStatusCode()==R.drawable.ic_received_ribbon) {
-                Log.d("status_problem", "received status is present but not allowed here !");
-//                Toast.makeText(holder.bouton1.getContext(), "", Toast.LENGTH_SHORT).show();
-            } else {
-                Log.d("status_problem", "Unknown status code");
-//                Toast.makeText(holder.bouton1.getContext(), "Unknown status code", Toast.LENGTH_SHORT).show();
-            }
+            Log.d("status_problem", "Unknown statusIV code");
+//                Toast.makeText(holder.bouton1.getContext(), "Unknown statusIV code", Toast.LENGTH_SHORT).show();
         }
     }
     // Return the size of your dataset (invoked by the layout manager)
@@ -401,6 +488,18 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
         int pb = bouton.getPaddingBottom();
         bouton.setBackground(ContextCompat.getDrawable(context, bg_code));
         bouton.setPadding(pl, pt, pr, pb);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        String stringId=mDataset.get(position).getCmd();
+        int id =Integer.parseInt(stringId);
+        return id;
+    }
+
+    @Override
+    public void setHasStableIds(boolean hasStableIds) {
+        super.setHasStableIds(hasStableIds);
     }
 }
 class RvCmdDetailsAdapter extends RecyclerView.Adapter<RvCmdDetailsAdapter.MyViewHolder> {
@@ -418,7 +517,7 @@ class RvCmdDetailsAdapter extends RecyclerView.Adapter<RvCmdDetailsAdapter.MyVie
             this.qty = view.findViewById(R.id.qty);
             this.qty2 = view.findViewById(R.id.qty2);
             this.price = view.findViewById(R.id.price);
-            this.price2 = view.findViewById(R.id.price2);
+            this.price2 = view.findViewById(R.id.afterCommaPrice);
             this.v=view;
         }
         View getView(){

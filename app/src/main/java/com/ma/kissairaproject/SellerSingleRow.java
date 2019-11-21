@@ -3,18 +3,22 @@ package com.ma.kissairaproject;
 import java.util.ArrayList;
 
 class SellerSingleRow {
-    String cmd;
-    String full_name;
-    int statusCode;
-    String price;
-    String afterCommaPrice;
-    boolean recent;
-    ArrayList<SingleRowProduct> detailCmdsList;
-    String address;
-    String phone_number;
-    String customer_ship_date;
-    String creation_time;
-    String creation_date;
+    private String ship_time;
+    private String ship_date;
+
+
+
+    private String cmd;
+    private String full_name;
+    private int statusCode;
+    private String price;
+    private String afterCommaPrice;
+    private boolean recent;
+    private ArrayList<SingleRowProduct> detailCmdsList;
+    private String address;
+    private String phone_number;
+    private String creation_time;
+    private String creation_date;
 
 
     public SellerSingleRow(){
@@ -28,7 +32,6 @@ class SellerSingleRow {
         detailCmdsList.add(new SingleRowProduct("tomates","10.","10","80.","80"));
         this.address="Adrresse";
         this.phone_number="0606060606";
-        this.customer_ship_date="2019-12-10 20:20:20";
         this.creation_time="50:50";
         this.creation_date="2019-20-20";
     }
@@ -42,9 +45,10 @@ class SellerSingleRow {
                            ArrayList<SingleRowProduct> detailCmdsList,
                            String address,
                            String phone_number,
-                           String customer_ship_date,
                            String creation_time,
-                           String creation_date
+                           String creation_date,
+                           String ship_time,
+                           String ship_date
 
     ) {
 
@@ -57,9 +61,11 @@ class SellerSingleRow {
         this.detailCmdsList=new ArrayList<>(detailCmdsList) ;
         this.address=address;
         this.phone_number=phone_number;
-        this.customer_ship_date=customer_ship_date;
         this.creation_time=creation_time;
         this.creation_date=creation_date;
+
+        this.ship_time=ship_time;
+        this.ship_date=ship_date;
     }
 
     public void setCmd(String cmd) {
@@ -90,6 +96,39 @@ class SellerSingleRow {
         this.detailCmdsList = detailCmdsList;
     }
 
+    public void setFull_name(String full_name) {
+        this.full_name = full_name;
+    }
+
+    public void setAfterCommaPrice(String afterCommaPrice) {
+        this.afterCommaPrice = afterCommaPrice;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
+    }
+
+
+
+    public void setCreation_time(String creation_time) {
+        this.creation_time = creation_time;
+    }
+
+    public void setCreation_date(String creation_date) {
+        this.creation_date = creation_date;
+    }
+
+    public void setShip_time(String ship_time) {
+        this.ship_time = ship_time;
+    }
+
+    public void setShip_date(String ship_date) {
+        this.ship_date = ship_date;
+    }
 
     public String getCmd(){
         return this.cmd;
@@ -119,14 +158,19 @@ class SellerSingleRow {
         return phone_number;
     }
 
-    public String getCustomer_ship_date() {
-        return customer_ship_date;
-    }
 
     public String getCreation_date() {
         return creation_date;
     }
     public String getCreation_time() {
         return creation_time;
+    }
+
+    public String getShip_time() {
+        return ship_time;
+    }
+
+    public String getShip_date() {
+        return ship_date;
     }
 }

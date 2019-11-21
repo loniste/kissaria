@@ -30,49 +30,27 @@ import java.net.URLEncoder;
 public class BackgroundWorker extends AsyncTask<String, Void, String> {
     public static String resultat;
 
-    Context context;
+//    Context context;
     AlertDialog alertDialog;
     public BackgroundWorker(Context ctx){
-        context=ctx;
+//        context=ctx;
+    }
+    public BackgroundWorker(){
     }
     @Override
     protected String doInBackground(String... params) {
         String type=params[0];
-/*
-        String login_url="http://192.168.137.251//projet/index.php";
-        String register_url="http://192.168.137.251//projet/register.php";
-        String mission_url="http://192.168.137.251//projet/mission.php";
-        String ordersList_url="http!://192.168.137.251//projet/orders_list.php";
-*//*
-        String login_url="http://192.168.101.1//projet/index.php";
-        String register_url="http://192.168.101.1//projet/register.php";
-        String mission_url="http://192.168.101.1//projet/mission.php";
-        String ordersList_url="http://192.168.101.1//projet/orders_list.php";
-/*
-        String login_url="http://192.168.42.152//projet/index.php";
-        String register_url="http://192.168.42.152//projet/register.php";
-        String mission_url="http://192.168.42.152//projet/mission.php";
-        String ordersList_url="http://192.168.42.152//projet/orders_list.php";
 
-
-        String login_url="http://192.168.43.118//projet/index.php";
-        String register_url="http://192.168.43.118//projet/register.php";
-        String mission_url="http://192.168.43.118//projet/mission.php";
-        String ordersList_url="http://192.168.43.118//projet/orders_list.php";
-
-
-        String login_url="http://192.168.1.183//projet/index.php";
-        String register_url="http://192.168.1.183//projet/register.php";
-        String mission_url="http://192.168.1.183//projet/mission.php";
-        String ordersList_url="http://192.168.1.183//projet/orders_list.php";
-*/
-        //String login_url="http://projet-31-07-19.000webhostapp.com/login.php";
         String register_url="http://192.168.1.183//projet/register.php";
         String SellerLoginUrl="https://dolimoni.com/kissaria/rec/login/apiCheckSellerlogin";
         String customerLoginUrl="https://dolimoni.com/kissaria/rec/login/apiCheckUserlogin";
         String sellerCommandList_url="https://dolimoni.com/kissaria/rec/seller/api/orders/apiGetAllOrders/";//the url is completed by then with the userId
         String customerCommandList_url="https://dolimoni.com/kissaria/rec/user/api/orders/apiGetAllOrders/";//the url is completed by then with the userId
-        String postStatusUrl="https://dolimoni.com/kissaria/rec/seller/api/orders/apiChangeStatus";
+        String postStatusSellerUrl="https://dolimoni.com/kissaria/rec/seller/api/orders/apiChangeStatus";
+        String postStatusCustomerUrl="https://dolimoni.com/kissaria/rec/user/api/orders/apiChangeStatusForShop";
+        String sellerLogOutUrl="https://dolimoni.com/kissaria/rec/login/apiSellerLogout";
+        String customerLogOutUrl="https://dolimoni.com/kissaria/rec/login/apiUserLogout";
+        String isOrderReceivedUrl="https://dolimoni.com/kissaria/rec/user/api/orders/isOrderReceived";
         switch (type) {
             case "seller_login":
                 try {
@@ -122,6 +100,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 }
 
                 break;
+
             case "customer_login":
                 try {
                     String email = params[1];
@@ -160,6 +139,93 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                     inputStream.close();
                     httpURLConnection.disconnect();
                     return result.toString();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "customer_logout":
+                try {
+                    String cuid = params[1];
+                    URL url = new URL(customerLogOutUrl);
+                    Log.d("customer_logoutn_bg_url",url+"");
+
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoInput(true);
+                    httpURLConnection.setDoOutput(true);
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "utf-8"));
+                    String post_data =
+                            URLEncoder.encode("cuid", "UTF-8") + "=" + URLEncoder.encode(cuid, "UTF-8");
+
+                    Log.d("customer_logout_bg",post_data);
+
+                    bufferedWriter.write(post_data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    outputStream.close();
+
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+                    String result = "";
+                    String line = "";
+                    while ((line = bufferedReader.readLine()) != null) {
+                        result += line;
+                    }
+
+                    Log.d("res_customer_logout_bg",String.valueOf(result));
+
+
+                    bufferedReader.close();
+                    inputStream.close();
+                    httpURLConnection.disconnect();
+                    return result;
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                break;
+            case "seller_logout":
+                try {
+                    String soid = params[1];
+                    URL url = new URL(sellerLogOutUrl);
+                    Log.d("seller_logout_bg_url",url+"");
+
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoInput(true);
+                    httpURLConnection.setDoOutput(true);
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "utf-8"));
+                    String post_data =
+                            URLEncoder.encode("soid", "UTF-8") + "=" + URLEncoder.encode(soid, "UTF-8");
+
+                    Log.d("seller_logout_bg",post_data);
+
+                    bufferedWriter.write(post_data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    outputStream.close();
+
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+                    String result = "";
+                    String line = "";
+                    while ((line = bufferedReader.readLine()) != null) {
+                        result += line;
+                    }
+
+                    Log.d("res_seller_logout_bg",String.valueOf(result));
+
+
+                    bufferedReader.close();
+                    inputStream.close();
+                    httpURLConnection.disconnect();
+                    return result;
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -303,13 +369,13 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                     e.printStackTrace();
                 }
                 break;
-            case "post_status":
+            case "post_status_seller":
                 try {
                     String shid = params[1];
                     String orid = params[2];
                     String status = params[3];
-                    URL url = new URL(postStatusUrl);
-                    Log.d("post_status_bg_url",url+"");
+                    URL url = new URL(postStatusSellerUrl);
+                    Log.d("poststatusSeller_bg_url",url+"");
 
                     HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                     httpURLConnection.setRequestMethod("POST");
@@ -317,13 +383,13 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                     httpURLConnection.setDoOutput(true);
                     OutputStream outputStream = httpURLConnection.getOutputStream();
                     BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "utf-8"));
-                    Log.d("status before sending: ", status);
+                    Log.d("poststatusSel_ready_bg", status);
                     String post_data
                             = URLEncoder.encode("shid", "UTF-8") + "=" + URLEncoder.encode(shid, "UTF-8") + "&"
                             + URLEncoder.encode("orid", "UTF-8") + "=" + URLEncoder.encode(orid, "UTF-8") +"&"
-                            + URLEncoder.encode("status", "UTF-8") + "=" + URLEncoder.encode(status, "UTF-8");
+                            + URLEncoder.encode("statusIV", "UTF-8") + "=" + URLEncoder.encode(status, "UTF-8");
 
-                    Log.d("post_status_bg",post_data);
+                    Log.d("poststatusSeller_bg_url",post_data);
 
                     bufferedWriter.write(post_data);
                     bufferedWriter.flush();
@@ -338,7 +404,104 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                         result.append(line);
                     }
 
-                    Log.d("res_post_status_bg",String.valueOf(result));
+                    Log.d("res_poststaSel_bg_url",String.valueOf(result));
+
+
+                    bufferedReader.close();
+                    inputStream.close();
+                    httpURLConnection.disconnect();
+                    //result= post_data;
+                    return result.toString();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "post_status_customer":
+                try {
+                    String shid = params[1];
+                    String orid = params[2];
+                    String status = params[3];
+                    URL url = new URL(postStatusCustomerUrl);
+                    Log.d("poststatusCus_bg_url",url+"");
+
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoInput(true);
+                    httpURLConnection.setDoOutput(true);
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "utf-8"));
+                    Log.d("poststatusCus_ready_bg", status);
+                    String post_data
+                            = URLEncoder.encode("orid", "UTF-8") + "=" + URLEncoder.encode(shid, "UTF-8") + "&"
+                            + URLEncoder.encode("shid", "UTF-8") + "=" + URLEncoder.encode(orid, "UTF-8") +"&"
+                            + URLEncoder.encode("statusIV", "UTF-8") + "=" + URLEncoder.encode(status, "UTF-8");
+
+                    Log.d("poststatusCus_bg_post",post_data);
+
+                    bufferedWriter.write(post_data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    outputStream.close();
+
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+                    StringBuilder result = new StringBuilder();
+                    String line = "";
+                    while ((line = bufferedReader.readLine()) != null) {
+                        result.append(line);
+                    }
+
+                    Log.d("res_poststaCus_bg_url",String.valueOf(result));
+
+
+                    bufferedReader.close();
+                    inputStream.close();
+                    httpURLConnection.disconnect();
+                    //result= post_data;
+                    return result.toString();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "notif_yes_no":
+                try {
+                    String shid = params[1];
+                    String orid = params[2];
+                    String answer = params[3];
+                    URL url = new URL(isOrderReceivedUrl);
+                    Log.d("notif_yes_no_bg_url",url+"");
+
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoInput(true);
+                    httpURLConnection.setDoOutput(true);
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "utf-8"));
+                    String post_data
+                            = URLEncoder.encode("shid", "UTF-8") + "=" + URLEncoder.encode(shid, "UTF-8") + "&"
+                            + URLEncoder.encode("orid", "UTF-8") + "=" + URLEncoder.encode(orid, "UTF-8") +"&"
+                            + URLEncoder.encode("isOrderReceived", "UTF-8") + "=" + URLEncoder.encode(answer, "UTF-8");
+
+                    Log.d("notif_yes_no_bg",post_data);
+
+                    bufferedWriter.write(post_data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    outputStream.close();
+
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+                    StringBuilder result = new StringBuilder();
+                    String line = "";
+                    while ((line = bufferedReader.readLine()) != null) {
+                        result.append(line);
+                    }
+
+                    Log.d("res_notif_yes_no_bg",String.valueOf(result));
 
 
                     bufferedReader.close();
@@ -358,7 +521,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPreExecute() {
-        alertDialog=new AlertDialog.Builder(context).create();
+//        alertDialog=new AlertDialog.Builder(context).create();
         super.onPreExecute();
     }
 

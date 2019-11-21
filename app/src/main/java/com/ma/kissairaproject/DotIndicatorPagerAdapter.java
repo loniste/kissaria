@@ -37,7 +37,7 @@ public class DotIndicatorPagerAdapter extends PagerAdapter {
     }
 
         TextView commande= item.findViewById(R.id.commande);
-        ImageView status= item.findViewById(R.id.status);
+        ImageView status= item.findViewById(R.id.status_tv);
         TextView price= item.findViewById(R.id.price);
 
 

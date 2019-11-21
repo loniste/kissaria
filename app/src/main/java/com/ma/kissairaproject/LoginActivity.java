@@ -42,15 +42,19 @@ public class LoginActivity extends AppCompatActivity {
     String userType ="seller_login";
     String result =null;
     String status = null;
+    String responseCode = null;
+    String firstName = "";
+    String lastName = "";
 
     private static final String USER_INFO = "USER_INFO";
     private static final String EMAIL = "EMAIL";
     private static final String PASSWORD = "PASSWORD";
     private static final String USERID = "USERID";
     private static final String TYPE = "TYPE" ;
+    private static final String FIRST_NAME = "FIRST_NAME" ;
+    private static final String LAST_NAME = "LAST_NAME" ;
 
     JSONObject jsonObject;
-
 
 
     @Override
@@ -123,7 +127,8 @@ public class LoginActivity extends AppCompatActivity {
             result=(result==null)?"":result;
             Log.d("jasonobject", result+"");
             jsonObject = new JSONObject(result);
-            status = jsonObject.getString("status");
+            status = jsonObject.getString("statusIV");
+            responseCode = jsonObject.getString("code");
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -138,33 +143,31 @@ public class LoginActivity extends AppCompatActivity {
                 new Runnable() {
                     public void run() {
                         // On complete call either onLoginSuccess or onLoginFailed
-                        switch (status) {
-                            case "success":
-                                Toast.makeText(LoginActivity.this, "success dès le premier coup", Toast.LENGTH_SHORT).show();
+                        switch (responseCode) {
+                            case "1":
+                                Toast.makeText(LoginActivity.this, "success dès le premier coup, code réponse: "+ responseCode, Toast.LENGTH_SHORT).show();
                                 try {
                                     userId = jsonObject.getString("shid");
+                                    firstName = jsonObject.getString("first_name");
+                                    lastName = jsonObject.getString("last_name");
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                                 onLoginSuccess();
                                 break;
-                            case "error":
-                                Toast.makeText(LoginActivity.this, "error while attempting to connect as a seller", Toast.LENGTH_SHORT).show();
-
-
-
-
-
-
-
-
-
+                            case "2":
+                                Toast.makeText(LoginActivity.this, "Another user is already connected with the same email !, code réponse: "+responseCode, Toast.LENGTH_SHORT).show();
+                                onLoginFailed();
+                                break;
+                            case "0":
+                                Toast.makeText(LoginActivity.this, "error while attempting to connect as a seller, code réponse: "+ responseCode, Toast.LENGTH_SHORT).show();
                                 userType ="customer_login";
                                 try {
                                     result = new BackgroundWorker(LoginActivity.this).execute(userType, email, password, token).get();
                                     result=(result==null)?"":result;
                                     jsonObject = new JSONObject(result);
-                                    status = jsonObject.getString("status");
+                                    status = jsonObject.getString("statusIV");
+                                    responseCode=jsonObject.getString("code");
                                     Log.d("resultat 123",result+"" );
                                 } catch (ExecutionException e) {
                                     e.printStackTrace();
@@ -180,49 +183,29 @@ public class LoginActivity extends AppCompatActivity {
                                         new Runnable() {
                                             public void run() {
                                                 // On complete call either onLoginSuccess or onLoginFailed
-                                                switch (status) {
-                                                    case "success":
+                                                switch (responseCode) {
+                                                    case "1":
+                                                        Toast.makeText(LoginActivity.this, "customer, code réponse: "+ responseCode, Toast.LENGTH_SHORT).show();
                                                         try {
                                                             userId = jsonObject.getString("cuid");
+                                                            firstName = jsonObject.getString("first_name");
+                                                            lastName = jsonObject.getString("last_name");
                                                         } catch (JSONException e) {
                                                             e.printStackTrace();
                                                         }
                                                         onLoginSuccess();
                                                         break;
-                                                    case "error":
+                                                    case "0":
                                                         onLoginFailed();
                                                         break;
-                                                    case "No internet":
-                                                        Toast.makeText(LoginActivity.this, "Aucune connexion internet n'est détectée !", Toast.LENGTH_SHORT).show();
-                                                        _loginButton.setEnabled(true);
+                                                    case "2":
+                                                        Toast.makeText(LoginActivity.this, "Another user is connected with the same email !, code réponse: "+responseCode, Toast.LENGTH_SHORT).show();
+                                                        onLoginFailed();
                                                         break;
                                                 }
                                                 progressDialog.dismiss();
                                             }
                                         }, 500);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                break;
-                            case "No internet":
-                                Toast.makeText(LoginActivity.this, "Aucune connexion internet n'est détectée !", Toast.LENGTH_SHORT).show();
-                                _loginButton.setEnabled(true);
                                 break;
                         }
                         // onLoginFailed();
@@ -271,6 +254,8 @@ public class LoginActivity extends AppCompatActivity {
                 .putString(EMAIL, email)
                 .putString(PASSWORD, password)
                 .putString(TYPE, userType)
+                .putString(FIRST_NAME, firstName)
+                .putString(LAST_NAME, lastName)
                 .apply();
 
         Toast.makeText(this, "user userType is: " + userType, Toast.LENGTH_SHORT).show();
@@ -283,7 +268,6 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
     public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "identifiant ou mot de passe incorrect, réessayez !", Toast.LENGTH_LONG).show();
         //Toast.makeText(LoginActivity.this, "Login failed", //Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
 
@@ -291,6 +275,8 @@ public class LoginActivity extends AppCompatActivity {
         userId="";
         email="";
         password="";
+        firstName="";
+        lastName="";
         userType ="seller_login";
         result =null;
         status = null;

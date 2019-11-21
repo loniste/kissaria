@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "663708758899",
+    "firebase_url": "https://kissariaproject2.firebaseio.com",
+    "project_id": "kissariaproject2",
+    "storage_bucket": "kissariaproject2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:663708758899:android:592ce5b0652116a9",
+        "android_client_info": {
+          "package_name": "com.ma.kissairaproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "663708758899-950hq7r8magbab1qfenloj7do4kvhqpb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCR2VmbM8Dqtv2b6RIj3W8kdzzVY9xM_a8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "663708758899-950hq7r8magbab1qfenloj7do4kvhqpb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

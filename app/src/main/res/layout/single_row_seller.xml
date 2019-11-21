@@ -8,6 +8,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
+    android:id="@+id/container"
     >
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -30,7 +31,7 @@
             card_view:contentPaddingLeft="5dp"
             card_view:contentPaddingTop="5dp">
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/linear_layout_nv_3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,7 +47,7 @@
                     android:orientation="horizontal">
 
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/linear_left"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -57,13 +58,13 @@
                         card_view:layout_constraintLeft_toLeftOf="parent"
                         >
 
-                        <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+                        <androidx.appcompat.widget.LinearLayoutCompat xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:baselineAligned="false"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/full_name"
                                 android:layout_width="97dp"
                                 android:layout_height="25dp"
@@ -73,7 +74,7 @@
                                 android:textSize="@dimen/normal"
                                 android:fontFamily="@font/font_style" />
 
-                            <TextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/cmdTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="25dp"
@@ -84,7 +85,7 @@
                                 android:textSize="@dimen/normal"
 
                                 android:fontFamily="@font/font_style" />
-                            <TextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/commande"
                                 android:layout_width="40dp"
 
@@ -95,11 +96,11 @@
                                 android:textColor="@color/accent"
                                 android:textSize="@dimen/normal"
                                 android:fontFamily="@font/font_style" />
-                            <LinearLayout
+                            <androidx.appcompat.widget.LinearLayoutCompat
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">
-                                <LinearLayout
+                                <androidx.appcompat.widget.LinearLayoutCompat
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal">
@@ -112,7 +113,7 @@
 
                                         android:src="@drawable/ic_clock_2" />
 
-                                    <TextView
+                                    <androidx.appcompat.widget.AppCompatTextView
                                         android:id="@+id/creation_time"
                                         android:layout_width="85dp"
                                         android:layout_height="14dp"
@@ -124,8 +125,8 @@
                                         android:textSize="@dimen/normal"
                                         android:fontFamily="@font/font_style"
                                         />
-                                </LinearLayout>
-                                <LinearLayout
+                                </androidx.appcompat.widget.LinearLayoutCompat>
+                                <androidx.appcompat.widget.LinearLayoutCompat
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal">
@@ -138,7 +139,7 @@
 
                                         android:src="@drawable/ic_calendar" />
 
-                                    <TextView
+                                    <androidx.appcompat.widget.AppCompatTextView
                                         android:id="@+id/creation_date"
                                         android:layout_width="85dp"
                                         android:layout_height="14dp"
@@ -150,14 +151,14 @@
                                         android:textColor="@color/gray"
                                         android:textSize="@dimen/normal"
                                         android:fontFamily="@font/font_style" />
-                                </LinearLayout>
+                                </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-                            </LinearLayout>
+                            </androidx.appcompat.widget.LinearLayoutCompat>
 
 
 
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -179,14 +180,14 @@
                                 card_view:layout_constraintLeft_toLeftOf="parent"
                                 />
 
-                            <TextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/address"
                                 android:layout_width="180dp"
                                 android:layout_height="25dp"
                                 android:layout_marginLeft="5dp"
                                 android:background="?android:attr/selectableItemBackground"
-                                android:ellipsize="end"
                                 android:gravity="center_vertical"
+                                android:ellipsize="end"
                                 android:maxLines="1"
                                 android:text="BD Mohammed 6, etg 3 ppt 10, lorem epsom, Casablanca"
                                 android:textColor="@color/gray"
@@ -199,7 +200,7 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -207,7 +208,7 @@
                         android:layout_height="match_parent"
                         card_view:layout_constraintRight_toRightOf="parent"
                         >
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/price"
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
@@ -223,7 +224,7 @@
                             card_view:layout_constraintBaseline_toBaselineOf="@id/MAD"
 
                             />
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/afterCommaPrice"
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
@@ -242,7 +243,7 @@
 
                             />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/MAD"
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
@@ -266,20 +267,21 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/hidable_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
+                    android:visibility="gone"
                     >
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/preferable_delivery_time_family"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/font_style"
@@ -288,7 +290,7 @@
                             android:textSize="@dimen/normal"
                             />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/customer_ship_date"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -298,8 +300,8 @@
                             android:textColor="@color/gray"
                             android:textSize="@dimen/normal"
                             />
-                    </LinearLayout>
-                    <LinearLayout
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -309,7 +311,7 @@
                         android:layout_marginBottom="10dp"
 
                         >
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/label"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -321,7 +323,7 @@
                             android:textColor="@color/gray"
 
                             />
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/qty"
 
                             android:layout_width="0dp"
@@ -335,7 +337,7 @@
                             android:textColor="@color/gray"
 
                             />
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
 
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -349,7 +351,7 @@
 
                             />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -368,7 +370,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtView1"
                             android:layout_width="80dp"
                             android:layout_height="wrap_content"
@@ -387,7 +389,7 @@
 
                             card_view:layout_constraintTop_toTopOf="parent" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtView2"
                             android:layout_width="80dp"
                             android:layout_height="wrap_content"
@@ -407,7 +409,7 @@
                             card_view:layout_constraintLeft_toRightOf="@id/txtView1"
                             card_view:layout_constraintTop_toTopOf="parent" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtView3"
                             android:layout_width="80dp"
                             android:layout_height="wrap_content"
@@ -438,22 +440,15 @@
                             android:src="@drawable/ic_call"
                             card_view:layout_constraintRight_toRightOf="parent"
                             card_view:layout_constraintTop_toTopOf="parent"
-
-
                             />
-
                     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-                </LinearLayout>
-
-
-            </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.cardview.widget.CardView>
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/status"
+        android:id="@+id/status_tv"
         android:layout_width="33dp"
         android:layout_height="33dp"
         android:layout_alignTop="@+id/cvLayout"

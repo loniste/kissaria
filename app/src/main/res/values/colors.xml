@@ -19,11 +19,15 @@
     <color name="iron">#CCCCCC</color>
     <color name="white">#FFFFFF</color>
     <color name="gray">#767171</color>
-    <color name="ready">#388E3C</color>
-    <color name="prepared">#8BC34A</color>
-    <color name="canceled">#966D38</color>
-    <color name="pending">#FBC02D</color>
-    <color name="received">#1AC8A9</color>
+
+
+
+    <color name="ready">#efc84a</color>
+    <color name="canceled">#bd3e25</color>
+    <color name="pending">#e27c3e</color>
+    <color name="received">#2ee632</color>
+    <color name="delivered">#45b39c</color>
+    <color name="almost_black">#262626</color>
 
 
 </resources>

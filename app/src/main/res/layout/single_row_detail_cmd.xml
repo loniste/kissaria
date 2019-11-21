@@ -7,8 +7,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginRight="5dp"
-        android:layout_marginLeft="5dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
 
@@ -22,7 +20,7 @@
             android:fontFamily="@font/font_style"
             android:textSize="@dimen/normal"
             android:textStyle="bold"
-            android:textColor="#B35555"
+            android:textColor="@color/almost_black"
 
             />
         <TextView
@@ -36,7 +34,7 @@
             android:fontFamily="@font/font_style"
             android:textSize="@dimen/normal"
             android:textStyle="bold"
-            android:textColor="#B35555"
+            android:textColor="@color/almost_black"
 
             />
         <TextView
@@ -50,23 +48,23 @@
             android:fontFamily="@font/font_style"
             android:textSize="@dimen/normal_sur_deux"
             android:textStyle="bold"
-            android:textColor="#B35555"
+            android:textColor="@color/almost_black"
 
             />
+
         <TextView
             android:id="@+id/price"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="5."
             android:layout_weight="1"
-            android:gravity="end"
             android:fontFamily="@font/font_style"
+            android:gravity="end"
+            android:text="5."
+            android:textColor="@color/almost_black"
             android:textSize="@dimen/normal"
-            android:textStyle="bold"
-            android:textColor="#B35555"
-            />
+            android:textStyle="bold" />
         <TextView
-            android:id="@+id/price2"
+            android:id="@+id/afterCommaPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00"
@@ -74,14 +72,14 @@
             android:fontFamily="@font/font_style"
             android:textSize="@dimen/normal_sur_deux"
             android:textStyle="bold"
-            android:textColor="#B35555"
+            android:textColor="@color/almost_black"
             />
 
     </LinearLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#B35555"/>
+        android:layout_height="2dp"
+        android:background="@color/almost_black"/>
 
 
 </LinearLayout>

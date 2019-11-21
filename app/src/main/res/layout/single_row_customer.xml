@@ -354,7 +354,7 @@
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/status"
+        android:id="@+id/status_tv"
         android:layout_width="33dp"
         android:layout_height="33dp"
         android:layout_alignTop="@+id/cvLayout"

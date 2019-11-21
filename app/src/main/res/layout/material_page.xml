@@ -103,7 +103,7 @@
                   android:src="@drawable/ic_clock" />
 
               <TextView
-                  android:id="@+id/time"
+                  android:id="@+id/creation_time"
                   android:layout_width="50dp"
                   android:layout_height="25dp"
                   android:gravity="center_vertical"
@@ -240,7 +240,7 @@
   </RelativeLayout>
 
   <ImageView
-      android:id="@+id/status"
+      android:id="@+id/status_tv"
       android:layout_width="104dp"
       android:layout_height="93dp"
       android:layout_alignTop="@+id/cvLayout"

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.PointF;
-import android.os.Build;
 import android.os.Bundle;
 //import android.support.annotation.NonNull;
 //import android.support.v7.app.AppCompatActivity;
@@ -15,11 +14,11 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 //import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -44,14 +43,12 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
-//import static com.ma.kissairaproject.LoginDatabaseAdapter.email;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "TAG2";
-
-
+    private static final String IS_IN_FORGROUND = "IS_IN_FORGROUND";
     String token="tokenWitoutInitialization";
 
     ArrayList<SellerSingleRow> sellerList = new ArrayList<>();
@@ -62,15 +59,21 @@ public class MainActivity extends AppCompatActivity {
     CustomerRecyclerViewAdapter customerRecyclerViewAdapter;
 
     SharedPreferences sharedPreferences;
+    SharedPreferences activityStateSharedPreferences;
     String userId="";
     String email="";
     String password="";
     String userType="";
+    String firstName = "";
+    String lastName = "";
+
     private static final String USER_INFO = "USER_INFO";
     private static final String EMAIL = "EMAIL";
     private static final String PASSWORD = "PASSWORD";
     private static final String USERID = "USERID";
     private static final String TYPE = "TYPE";
+    private static final String FIRST_NAME = "FIRST_NAME" ;
+    private static final String LAST_NAME = "LAST_NAME" ;
 
 
 
@@ -79,8 +82,6 @@ public class MainActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
     private SwipeRefreshLayout swipeContainer;
-
-
     /*for drawerLayout*/
     private DrawerLayout dl;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -103,20 +104,18 @@ public class MainActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                sellerList.clear();
-                customer_list.clear();
                 if (userType.equals("customer_login")){
+                    customer_list.clear();
                     getCustomerCmdList(userId);
                 } else if (userType.equals("seller_login")) {
+                    sellerList.clear();
                     getSellerCmdList(userId);
                 }
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
                         swipeContainer.setRefreshing(false);
-
                     }
                 }, 500);
             }
@@ -126,10 +125,6 @@ public class MainActivity extends AppCompatActivity {
                                                 android.R.color.holo_green_light,
                                                 android.R.color.holo_orange_light,
                                                 android.R.color.holo_blue_bright);
-
-
-
-
 
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -154,6 +149,12 @@ public class MainActivity extends AppCompatActivity {
                             email = sharedPreferences.getString(EMAIL, "");
                             password = sharedPreferences.getString(PASSWORD, "");
                             userType = sharedPreferences.getString(TYPE, "");
+                            firstName = sharedPreferences.getString(FIRST_NAME, "");
+                            lastName = sharedPreferences.getString(LAST_NAME, "");
+
+                            TextView userName =nv.getHeaderView(0).findViewById(R.id.user_name);
+                            userName.setText(String.format("%s %s", firstName, lastName));
+
                             Log.d("userType", userType);
                             String message="email: " + email + " password: " + password;
                             //Toast.makeText(MainActivity.this,message, //Toast.LENGTH_SHORT).show();
@@ -174,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+        //navigation drawer processing
         dl = (DrawerLayout)findViewById(R.id.activity_main);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, dl,R.string.Open, R.string.Close);
 
@@ -181,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         nv = (NavigationView)findViewById(R.id.nv);
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -193,18 +196,17 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "My Account",Toast.LENGTH_SHORT).show();break;
                     case R.id.settings:
                         Toast.makeText(MainActivity.this, "Settings",Toast.LENGTH_SHORT).show();break;
-                    case R.id.mycart:
+                    case R.id.propos:
                         Toast.makeText(MainActivity.this, "My Cart",Toast.LENGTH_SHORT).show();break;
                     default:
                         return true;
                 }
                 return true;
-
             }
         });
+
+
     }
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -216,6 +218,13 @@ public class MainActivity extends AppCompatActivity {
                 //we retreive userId that have been stored thanks to loginActivity
                 userId = sharedPreferences.getString(USERID, "");
                 userType = sharedPreferences.getString(TYPE, "");
+                firstName = sharedPreferences.getString(FIRST_NAME, "");
+                lastName = sharedPreferences.getString(LAST_NAME, "");
+                Log.d("first_name",firstName);
+
+                TextView userName =nv.getHeaderView(0).findViewById(R.id.user_name);
+                userName.setText(String.format("%s %s", firstName, lastName));
+
                 Log.d("user_id", userId);
                 if (userType.equals("customer_login")){
                     getCustomerCmdList(userId);
@@ -224,32 +233,37 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 //Toast.makeText(this, "Problem", //Toast.LENGTH_SHORT).show();
-
             }
         } else {
             //Toast.makeText(this, "Problem 2", //Toast.LENGTH_SHORT).show();
         }
-
-
     }
-
     @Override
     public void onResume() {
         super.onResume();
         this.registerReceiver(mMessageReceiver, new IntentFilter("unique_name"));
-    }
 
+        activityStateSharedPreferences= getBaseContext().getSharedPreferences(USER_INFO, MODE_PRIVATE);
+        activityStateSharedPreferences
+                .edit()
+                .putBoolean(IS_IN_FORGROUND, true)
+                .apply();
+
+
+    }
     //Must unregister onPause()
     @Override
     protected void onPause() {
         super.onPause();
         this.unregisterReceiver(mMessageReceiver);
+        activityStateSharedPreferences= getBaseContext().getSharedPreferences(USER_INFO, MODE_PRIVATE);
+        activityStateSharedPreferences
+                .edit()
+                .putBoolean(IS_IN_FORGROUND,false)
+                .apply();
     }
-
-
     //This is the handler that will manager to process the broadcast intent
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -264,14 +278,12 @@ public class MainActivity extends AppCompatActivity {
                 getCustomerCmdList(userId);
             } else if (userType.equals("seller_login")) {
                 getSellerCmdList(userId);
-            }            Toast.makeText(getApplicationContext(), "Liste actualisée suite à une nouvelle commande", Toast.LENGTH_SHORT).show();
+            }
+            Toast.makeText(getApplicationContext(), "Liste actualisée suite à une nouvelle commande", Toast.LENGTH_SHORT).show();
 
             //Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
     };
-
-
-
     public  void getSellerCmdList(String userId) {
         String backGroundType="sellerCommandList";
         BackgroundWorker backgroundWorker=new BackgroundWorker(MainActivity.this);
@@ -279,25 +291,17 @@ public class MainActivity extends AppCompatActivity {
         try {
             tempResult=backgroundWorker.execute(backGroundType,userId).get();
             tempResult=(tempResult==null)?"":tempResult;
-
             Log.d("result", tempResult+"");
-
-
             //Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
-
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
         final String result = tempResult;
         try {
-
             JSONObject json = new JSONObject(result);
             JSONArray jArray = json.getJSONArray("orders");
-
             boolean boolTemp;
             for(int i=0; i<jArray.length(); i++){
                 JSONObject json_line = jArray.getJSONObject(i);
@@ -305,19 +309,21 @@ public class MainActivity extends AppCompatActivity {
                 int imageCode=0;
                 switch (json_line.getString("orderstatus")) {
                     case "pending":
-                        imageCode = R.drawable.ic_pending_ribbon;
+                        imageCode = R.drawable.ic_pending_icon;
                         break;
                     case "canceled":
-                        imageCode = R.drawable.ic_canceled_ribbon;
+                        imageCode = R.drawable.ic_canceled_icon;
                         break;
                     case "ready":
-                        imageCode = R.drawable.ic_ready_ribbon;
+                        imageCode = R.drawable.ic_ready_icon;
                         break;
                     case "delivered":
-                        imageCode = R.drawable.ic_delivered_ribbon;
+                        imageCode = R.drawable.ic_delivered_icon;
                         break;
                     case "received":
-                        imageCode = R.drawable.ic_received_ribbon;
+                        //this is right though, in fact, we are asked to transform statusIV to
+                        // delivered in the seller side when the actual statusIV is received
+                        imageCode = R.drawable.ic_received_icon;
                         break;
                 }
                 ArrayList<SingleRowProduct> detailCmdsList=new ArrayList<>();
@@ -338,19 +344,21 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList<String> l=new ArrayList<>();
                 l= getNumberCouple(json_line.getString("subTotal"));
                 ArrayList<String> dateCouple= getDateCouple(json_line.getString("created_at"));
+                ArrayList<String> dateCouple2= getDateCouple(json_line.getString("customer_ship_date"));
                 sellerList.add(new SellerSingleRow(
                         json_line.getString("orid"),//order Id
                         json_line.getString("first_name")+" "+json_line.getString("last_name"),
-                        imageCode, //for status ribbon
+                        imageCode, //for statusIV ribbon
                         l.get(0), //price big part
                         l.get(1),//price decimal part
                         boolTemp,//even and add elements
                         detailCmdsList, //command sellerList details for each ingle element
                         json_line.getString("address"),
                         json_line.getString("phone"),
-                        json_line.getString("customer_ship_date"),
                         dateCouple.get(1),//time
-                        dateCouple.get(0)//date
+                        dateCouple.get(0),//date
+                        dateCouple2.get(1),//time2
+                        dateCouple2.get(0)//date2
                 ));
             }
         } catch (Exception e) {
@@ -359,6 +367,9 @@ public class MainActivity extends AppCompatActivity {
 //        linearLayoutManager.setItemPrefetchEnabled(false);
         linearLayoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setItemViewCacheSize(20);
+        recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 20);
+        recyclerView.setItemViewCacheSize(20);
         sellerRecyclerViewAdapter =new SellerRecyclerViewAdapter(sellerList,this, userId);
         recyclerView.setAdapter(sellerRecyclerViewAdapter);
     }
@@ -369,10 +380,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             tempResult=backgroundWorker.execute(backGroundType,userId).get();
             tempResult=(tempResult==null)?"":tempResult;
-
             Log.d("result", tempResult+"");
-
-
             //Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
 
         } catch (ExecutionException e) {
@@ -411,7 +419,6 @@ public class MainActivity extends AppCompatActivity {
                         imageCode = R.drawable.ic_received_ribbon;
                         break;
                 }
-
                 ArrayList<SingleRowShop> shopList=new ArrayList<>();
                 JSONArray shops_jArray = json_line.getJSONArray("shops");
 
@@ -461,14 +468,14 @@ public class MainActivity extends AppCompatActivity {
                 customer_list.add(new CustomerSingleRow(
                         json_line.getString("orid"),//order Id
                         json_line.getString("first_name")+" "+json_line.getString("last_name"),
-                        imageCode, //for status ribbon
+                        imageCode, //for statusIV ribbon
                         l.get(0), //price big part
                         l.get(1),//price decimal part
                         boolTemp,//even and add elements
                         shopList, //command sellerList details for each ingle element
                         json_line.getString("address"),
                         json_line.getString("phone"),
-                        json_line.getString("customer_ship_date"),
+                        json_line.getString("shipTime"),
                         dateCouple.get(1),//time
                         dateCouple.get(0)//date
                 ));
@@ -566,10 +573,21 @@ public class MainActivity extends AppCompatActivity {
 
             loginDataBaseAdapter.deleteEntry(storedEmail);
             loginDataBaseAdapter.close();*/
+            String result="";
+            String postType=(userType.equals("customer_login"))?"customer_logout":"seller_logout";
+            BackgroundWorker backgroundWorker=new BackgroundWorker(MainActivity.this);
+            try {
+                result= backgroundWorker.execute(postType,userId).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Log.d("deconnection_result", result+"");
 
-
-            sharedPreferences.edit().clear().commit();
+            sharedPreferences.edit().clear().apply();
             sellerList.clear();
+            customer_list.clear();
 
             //passer à l activité de login
             Intent intent = new Intent(this, LoginActivity.class);

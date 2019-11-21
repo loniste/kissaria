@@ -13,10 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-
-
-
-
     <!-- A RecyclerView with some commonly used attributes -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/my_recycler_view"
@@ -34,6 +30,4 @@
         android:id="@+id/nv">
 
     </com.google.android.material.navigation.NavigationView>
-
-
 </androidx.drawerlayout.widget.DrawerLayout>

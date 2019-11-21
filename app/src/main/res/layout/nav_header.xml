@@ -10,7 +10,17 @@
         android:layout_height="130dp"
         android:layout_marginBottom="15dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/ic_launcher_background"
+        />
+    <!--android:background="@drawable/ic_launcher_background"-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HAKIK Nabil"
+        android:textSize="30dp"
+        android:id="@+id/user_name"
+        android:textColor="@color/white"
+        android:fontFamily="@font/font_style"
         />
 
 </LinearLayout>
