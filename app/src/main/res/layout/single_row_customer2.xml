@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    >
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cvLayout">
+
+        <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:animateLayoutChanges="false"
+            card_view:cardBackgroundColor="#f2f2f2"
+            card_view:cardCornerRadius="3dp"
+            card_view:cardElevation="3dp"
+            card_view:cardPreventCornerOverlap="true"
+            card_view:cardUseCompatPadding="true"
+            card_view:contentPaddingBottom="5dp"
+            card_view:contentPaddingLeft="5dp"
+            card_view:contentPaddingTop="5dp">
+
+            <LinearLayout
+                android:id="@+id/linear_layout_nv_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/linear_layout_nv_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginRight="0dp"
+                    android:orientation="horizontal">
+
+
+                    <LinearLayout
+                        android:id="@+id/linear_left"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+
+                        android:orientation="vertical">
+
+                        <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:baselineAligned="false"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/full_name"
+                                android:layout_width="97dp"
+                                android:layout_height="25dp"
+                                android:gravity="top"
+                                android:text="HAKIK NABIL"
+                                android:textColor="@color/gray"
+                                android:textSize="@dimen/normal"
+                                android:fontFamily="@font/font_style" />
+
+                            <TextView
+                                android:id="@+id/cmdTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="25dp"
+                                android:gravity="top"
+                                android:text="N°:"
+
+                                android:textColor="@color/accent"
+                                android:textSize="@dimen/normal"
+
+                                android:fontFamily="@font/font_style" />
+                            <TextView
+                                android:id="@+id/commande"
+                                android:layout_width="40dp"
+
+                                android:layout_height="25dp"
+                                android:text="123456"
+                                android:gravity="top"
+
+                                android:textColor="@color/accent"
+                                android:textSize="@dimen/normal"
+                                android:fontFamily="@font/font_style" />
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+                                    <ImageView
+                                        android:layout_width="10dp"
+                                        android:layout_height="12dp"
+                                        android:layout_gravity="top"
+                                        android:contentDescription="clock"
+                                        android:scaleType="fitEnd"
+
+                                        android:src="@drawable/ic_clock_2" />
+
+                                    <TextView
+                                        android:id="@+id/creation_time"
+                                        android:layout_width="85dp"
+                                        android:layout_height="14dp"
+                                        android:gravity="center_vertical"
+                                        android:paddingLeft="5dp"
+                                        android:scaleType="centerInside"
+                                        android:text="99:99"
+                                        android:textColor="@color/gray"
+                                        android:textSize="@dimen/normal"
+                                        android:fontFamily="@font/font_style"
+                                        />
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+                                    <ImageView
+                                        android:layout_width="10dp"
+                                        android:layout_height="12dp"
+                                        android:layout_gravity="top"
+                                        android:contentDescription="calendar"
+                                        android:scaleType="fitEnd"
+
+                                        android:src="@drawable/ic_calendar" />
+
+                                    <TextView
+                                        android:id="@+id/creation_date"
+                                        android:layout_width="85dp"
+                                        android:layout_height="14dp"
+                                        android:gravity="center_vertical"
+                                        android:paddingLeft="5dp"
+
+                                        android:scaleType="centerInside"
+                                        android:text="10-10-2019"
+                                        android:textColor="@color/gray"
+                                        android:textSize="@dimen/normal"
+                                        android:fontFamily="@font/font_style" />
+                                </LinearLayout>
+
+
+                            </LinearLayout>
+
+
+
+                        </LinearLayout>
+
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/status_and_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+
+                            <ImageView
+                                android:id="@+id/address_logo"
+                                android:layout_width="7dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="start"
+                                android:adjustViewBounds="true"
+                                android:baselineAlignBottom="true"
+                                android:src="@drawable/ic_location"
+                                card_view:layout_constraintBaseline_toBaselineOf="@id/address"
+                                card_view:layout_constraintLeft_toLeftOf="parent"
+                                />
+
+                            <TextView
+                                android:id="@+id/address"
+                                android:layout_width="180dp"
+                                android:layout_height="25dp"
+                                android:layout_marginLeft="5dp"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:ellipsize="end"
+                                android:gravity="center_vertical"
+                                android:maxLines="1"
+                                android:text="BD Mohammed 6, etg 3 ppt 10, lorem epsom, Casablanca"
+                                android:textColor="@color/gray"
+                                android:textSize="@dimen/normal"
+                                card_view:fontFamily="@font/font_style"
+                                card_view:layout_constraintLeft_toRightOf="@id/address_logo"
+                                card_view:layout_constraintTop_toTopOf="parent" />
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linear_right"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5">
+
+                        <TextView
+                            android:id="@+id/price"
+                            android:layout_width="70dp"
+                            android:layout_height="50dp"
+                            android:fontFamily="@font/font_style"
+                            android:gravity="top|end"
+                            android:padding="1dp"
+                            android:text="20,"
+                            android:textColor="@color/accent"
+                            android:textSize="40sp"
+
+                            />
+                        <TextView
+                            android:id="@+id/afterCommaPrice"
+                            android:layout_width="20dp"
+                            android:layout_height="50dp"
+                            android:fontFamily="@font/font_style"
+                            android:gravity="center_vertical|start"
+                            android:padding="1dp"
+                            android:text="50"
+                            android:textColor="@color/accent"
+                            android:textSize="@dimen/normal"
+
+                            />
+
+                        <TextView
+                            android:id="@+id/MAD"
+                            android:layout_width="20dp"
+                            android:layout_height="50dp"
+                            android:fontFamily="@font/font_style"
+                            android:gravity="top|end"
+                            android:text="DH"
+                            android:textColor="@color/accent"
+                            android:textSize="@dimen/normal"
+
+
+                            />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/hidable_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    >
+
+                    <LinearLayout
+                        android:id="@+id/preferable_delivery_time_family"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/font_style"
+                            android:text="Date et heure souhaitées de livraison:"
+                            android:textColor="@color/gray"
+                            android:textSize="@dimen/normal"
+                            />
+
+                        <TextView
+                            android:id="@+id/customer_ship_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:fontFamily="@font/font_style"
+                            android:text="20:00"
+                            android:textColor="@color/gray"
+                            android:textSize="@dimen/normal"
+                            />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+
+                        >
+                        <TextView
+                            android:id="@+id/label"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Libellé"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/font_style"
+                            android:textSize="@dimen/normal"
+                            android:textStyle="bold"
+                            android:textColor="@color/gray"
+
+                            />
+                        <TextView
+                            android:id="@+id/qty"
+
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Quantité"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:fontFamily="@font/font_style"
+                            android:textSize="@dimen/normal"
+                            android:textStyle="bold"
+                            android:textColor="@color/gray"
+
+                            />
+                        <TextView
+
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Prix"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:fontFamily="@font/font_style"
+                            android:textSize="@dimen/normal"
+                            android:textStyle="bold"
+                            android:textColor="@color/gray"
+
+                            />
+
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+
+                        android:background="#B35555"/>
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_detail_cmd"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    </androidx.recyclerview.widget.RecyclerView>
+
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/status_tv"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_alignTop="@+id/cvLayout"
+        android:layout_alignRight="@+id/cvLayout"
+        android:layout_marginHorizontal="0dp"
+        android:layout_marginVertical="1dp"
+
+        android:src="@drawable/ic_canceled_ribbon" />
+
+
+</RelativeLayout >
+
