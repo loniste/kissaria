@@ -4,5 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="normal">14sp</dimen>
     <dimen name="normal_sur_deux">12sp</dimen>
-    <dimen name="cardview_margin">10dp</dimen>
+    <dimen name="cardview_margin">15dp</dimen>
+    <dimen name="app_bar_text">20sp</dimen>
 </resources>

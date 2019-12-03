@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.PointF;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 //import android.support.annotation.NonNull;
 //import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 //import android.widget.Toast;
@@ -47,9 +49,8 @@ import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "TAG2";
-    private static final String IS_IN_FORGROUND = "IS_IN_FORGROUND";
-    String token="tokenWitoutInitialization";
+
+
 
     ArrayList<SellerSingleRow> sellerList = new ArrayList<>();
     ArrayList<CustomerSingleRow> customer_list = new ArrayList<>();
@@ -66,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
     String userType="";
     String firstName = "";
     String lastName = "";
+    String profileImageLink = "";
+    String token="tokenWitoutInitialization";
+
 
     private static final String USER_INFO = "USER_INFO";
     private static final String EMAIL = "EMAIL";
@@ -74,18 +78,58 @@ public class MainActivity extends AppCompatActivity {
     private static final String TYPE = "TYPE";
     private static final String FIRST_NAME = "FIRST_NAME" ;
     private static final String LAST_NAME = "LAST_NAME" ;
+    private static final String PROFILE_IMAGE_LINK = "PROFILE_IMAGE_LINK" ;
+    private static final String TAG = "MainActivity";
+    private static final String IS_IN_FORGROUND = "IS_IN_FORGROUND";
+    private static final String TOKEN = "TOKEN";
+
+    public static final  String CUSTOMER_LOGIN="customer_login";
+    public static final  String SELLER_LOGIN="seller_login";
+
+    private static final String SELLER_COMMAND_LIST = "sellerCommandList";
+    private static final String CUSTOMER_COMMAND_LIST = "custommerCommandList";
+
+    private static final String PENDING = "pending";
+    private static final String CANCELED = "canceled";
+    private static final String READY = "ready";
+    private static final String DELIVERED = "delivered";
+    private static final String RECEIVED = "received";
+
+    private static final String ORDERS_BY_SELLERS = "ordersBySellers";
+    private static final String ORDER_STATUS ="orderstatus" ;
+    private static final String SHOPS = "shops";
+    private static final String SHOP_NAME ="shopName" ;
+    private static final String PRODUCTS = "products";
+    private static final String UNIT_PRICE ="unit_price" ;
+    private static final String QUANTITY = "quantity";
+    private static final String SHOP_ID ="shid" ;
+    private static final String SHOP_STATUS ="osOrderstatus" ;
 
 
+    private static final String SELLER_FIRST_NAME = "first_name";
+    private static final String SELLER_LAST_NAME = "last_name";
+    private static final String SELLER_ADDRESS ="address" ;
+    private static final String SELLER_PHONE ="phone" ;
+    private static final String CUSTOMER_ORDERS_LIST = "orders";
+    private static final String PRODUCT_NAME = "name";
+    private static final String ORDER_ID = "orid";
+    private static final String CUSTOMER_FIRST_NAME = "first_name";
+    private static final String CUSTOMER_LAST_NAME = "last_name";
+    private static final String CUSTOMER_ADDRESS ="address" ;
+    private static final String CUSTOMER_PHONE = "phone";
 
-
-    public void onBackPressed() {
-        moveTaskToBack(true);
-    }
-    private SwipeRefreshLayout swipeContainer;
     /*for drawerLayout*/
     private DrawerLayout dl;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private NavigationView nv;
+
+
+    private SwipeRefreshLayout swipeContainer;
+
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +139,9 @@ public class MainActivity extends AppCompatActivity {
 
         /**Cancel notifications**/
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.cancelAll();
+        if (nm != null) {
+            nm.cancelAll();
+        }
 
         /**For pull and refresh**/
         // Lookup the swipe container view
@@ -104,10 +150,10 @@ public class MainActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (userType.equals("customer_login")){
+                if (userType.equals(CUSTOMER_LOGIN)){
                     customer_list.clear();
                     getCustomerCmdList(userId);
-                } else if (userType.equals("seller_login")) {
+                } else if (userType.equals(SELLER_LOGIN)) {
                     sellerList.clear();
                     getSellerCmdList(userId);
                 }
@@ -151,25 +197,34 @@ public class MainActivity extends AppCompatActivity {
                             userType = sharedPreferences.getString(TYPE, "");
                             firstName = sharedPreferences.getString(FIRST_NAME, "");
                             lastName = sharedPreferences.getString(LAST_NAME, "");
+                            profileImageLink = sharedPreferences.getString(PROFILE_IMAGE_LINK, "");
 
                             TextView userName =nv.getHeaderView(0).findViewById(R.id.user_name);
                             userName.setText(String.format("%s %s", firstName, lastName));
 
-                            Log.d("userType", userType);
-                            String message="email: " + email + " password: " + password;
-                            //Toast.makeText(MainActivity.this,message, //Toast.LENGTH_SHORT).show();
 
+
+                            ImageView userProfile =nv.getHeaderView(0).findViewById(R.id.user_profile);
+                            BackgroundWorkerProfile backgroundWorkerProfile=new BackgroundWorkerProfile();
+                            Drawable drawableProfile=null;
+                            try {
+                                drawableProfile=backgroundWorkerProfile.execute(profileImageLink).get();
+                                userProfile.setImageDrawable(drawableProfile);
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
-                        //Toast.makeText(this, "stored mail: " + storedEmail, //Toast.LENGTH_SHORT).show();
                         if (          !email.equals("")   &&    ! password.equals("") &&    ! userId.equals("")  ) {
-                            if (userType.equals("customer_login")){
+                            if (userType.equals(CUSTOMER_LOGIN)){
                                 getCustomerCmdList(userId);
-                            } else if (userType.equals("seller_login")) {
+                            } else if (userType.equals(SELLER_LOGIN)) {
                                 getSellerCmdList(userId);
                             }                            //Toast.makeText(MainActivity.this, email +"/ userId"+userId, //Toast.LENGTH_SHORT).show();
                         }else {
                             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            intent.putExtra("TOKEN", token);
+                            intent.putExtra(TOKEN, token);
                             startActivityForResult(intent, 2);
                         }
                     }
@@ -220,22 +275,31 @@ public class MainActivity extends AppCompatActivity {
                 userType = sharedPreferences.getString(TYPE, "");
                 firstName = sharedPreferences.getString(FIRST_NAME, "");
                 lastName = sharedPreferences.getString(LAST_NAME, "");
+                profileImageLink = sharedPreferences.getString(PROFILE_IMAGE_LINK, "");
                 Log.d("first_name",firstName);
 
                 TextView userName =nv.getHeaderView(0).findViewById(R.id.user_name);
                 userName.setText(String.format("%s %s", firstName, lastName));
 
-                Log.d("user_id", userId);
-                if (userType.equals("customer_login")){
+
+
+                ImageView userProfile =nv.getHeaderView(0).findViewById(R.id.user_profile);
+                BackgroundWorkerProfile backgroundWorkerProfile=new BackgroundWorkerProfile();
+                Drawable drawableProfile=null;
+                try {
+                    drawableProfile=backgroundWorkerProfile.execute(profileImageLink).get();
+                    userProfile.setImageDrawable(drawableProfile);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (userType.equals(CUSTOMER_LOGIN)){
                     getCustomerCmdList(userId);
-                } else if (userType.equals("seller_login")) {
+                } else if (userType.equals(SELLER_LOGIN)) {
                     getSellerCmdList(userId);
                 }
-            } else {
-                //Toast.makeText(this, "Problem", //Toast.LENGTH_SHORT).show();
             }
-        } else {
-            //Toast.makeText(this, "Problem 2", //Toast.LENGTH_SHORT).show();
         }
     }
     @Override
@@ -248,8 +312,6 @@ public class MainActivity extends AppCompatActivity {
                 .edit()
                 .putBoolean(IS_IN_FORGROUND, true)
                 .apply();
-
-
     }
     //Must unregister onPause()
     @Override
@@ -262,6 +324,19 @@ public class MainActivity extends AppCompatActivity {
                 .putBoolean(IS_IN_FORGROUND,false)
                 .apply();
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (userType.equals(CUSTOMER_LOGIN)){
+            customer_list.clear();
+            getCustomerCmdList(userId);
+        } else if (userType.equals(SELLER_LOGIN)) {
+            sellerList.clear();
+            getSellerCmdList(userId);
+        }
+
+    }
     //This is the handler that will manager to process the broadcast intent
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -269,14 +344,11 @@ public class MainActivity extends AppCompatActivity {
 
             // Extract data included in the Intent
             String message = intent.getStringExtra("message");
-            Log.d("OnReceivedMessage: ", message);
-//            sellerList.add(new SellerSingleRow());
-////            sellerRecyclerViewAdapter.notifyItemInserted(sellerList.size() - 1);
-            sellerList.clear();
-            customer_list.clear();
-            if (userType.equals("customer_login")){
+            if (userType.equals(CUSTOMER_LOGIN)){
+                customer_list.clear();
                 getCustomerCmdList(userId);
-            } else if (userType.equals("seller_login")) {
+            } else if (userType.equals(SELLER_LOGIN)) {
+                sellerList.clear();
                 getSellerCmdList(userId);
             }
             Toast.makeText(getApplicationContext(), "Liste actualisée suite à une nouvelle commande", Toast.LENGTH_SHORT).show();
@@ -285,14 +357,16 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     public  void getSellerCmdList(String userId) {
-        String backGroundType="sellerCommandList";
         BackgroundWorker backgroundWorker=new BackgroundWorker(MainActivity.this);
+        BackgroundWorkerProfile backgroundWorkerProfile=new BackgroundWorkerProfile();
         String tempResult=null;
+        Drawable drawableProfile=null;
+
         try {
-            tempResult=backgroundWorker.execute(backGroundType,userId).get();
+            tempResult=backgroundWorker.execute(SELLER_COMMAND_LIST,userId).get();
+            drawableProfile=backgroundWorkerProfile.execute("https://image.shutterstock.com/image-vector/shield-letter-s-logosafesecureprotection-logomodern-260nw-633031571.jpg").get();
             tempResult=(tempResult==null)?"":tempResult;
             Log.d("result", tempResult+"");
-            //Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -301,29 +375,29 @@ public class MainActivity extends AppCompatActivity {
         final String result = tempResult;
         try {
             JSONObject json = new JSONObject(result);
-            JSONArray jArray = json.getJSONArray("orders");
+            JSONArray jArray = json.getJSONArray(CUSTOMER_ORDERS_LIST);
             boolean boolTemp;
             for(int i=0; i<jArray.length(); i++){
                 JSONObject json_line = jArray.getJSONObject(i);
                 boolTemp= (i % 2 == 0);
                 int imageCode=0;
-                switch (json_line.getString("orderstatus")) {
-                    case "pending":
+                switch (json_line.getString(ORDER_STATUS)) {
+                    case PENDING:
                         imageCode = R.drawable.ic_pending_icon;
                         break;
-                    case "canceled":
+                    case CANCELED:
                         imageCode = R.drawable.ic_canceled_icon;
                         break;
-                    case "ready":
+                    case READY:
                         imageCode = R.drawable.ic_ready_icon;
                         break;
-                    case "delivered":
+                    case DELIVERED:
                         imageCode = R.drawable.ic_delivered_icon;
                         break;
-                    case "received":
+                    case RECEIVED:
                         //this is right though, in fact, we are asked to transform statusIV to
                         // delivered in the seller side when the actual statusIV is received
-                        imageCode = R.drawable.ic_received_icon;
+                        imageCode = R.drawable.ic_delivered_icon;
                         break;
                 }
                 ArrayList<SingleRowProduct> detailCmdsList=new ArrayList<>();
@@ -333,7 +407,7 @@ public class MainActivity extends AppCompatActivity {
                     ArrayList<String> unitPriceList= getNumberCouple(json_product_row.getString("subTotal"));
                     ArrayList<String> unitQtyList= getNumberCouple(json_product_row.getString("quantity"));
                     detailCmdsList.add(new SingleRowProduct(
-                            json_product_row.getString("name"),
+                            json_product_row.getString(PRODUCT_NAME),
                             unitQtyList.get(0) ,
                             unitQtyList.get(1) ,
                             unitPriceList.get(0),
@@ -341,24 +415,25 @@ public class MainActivity extends AppCompatActivity {
                             )
                     );
                 }
-                ArrayList<String> l=new ArrayList<>();
+                ArrayList<String> l;
                 l= getNumberCouple(json_line.getString("subTotal"));
                 ArrayList<String> dateCouple= getDateCouple(json_line.getString("created_at"));
                 ArrayList<String> dateCouple2= getDateCouple(json_line.getString("customer_ship_date"));
                 sellerList.add(new SellerSingleRow(
-                        json_line.getString("orid"),//order Id
-                        json_line.getString("first_name")+" "+json_line.getString("last_name"),
+                        json_line.getString(ORDER_ID),//order Id
+                        json_line.getString(CUSTOMER_FIRST_NAME)+" "+json_line.getString(CUSTOMER_LAST_NAME),
                         imageCode, //for statusIV ribbon
                         l.get(0), //price big part
                         l.get(1),//price decimal part
                         boolTemp,//even and add elements
                         detailCmdsList, //command sellerList details for each ingle element
-                        json_line.getString("address"),
-                        json_line.getString("phone"),
+                        json_line.getString(CUSTOMER_ADDRESS),
+                        json_line.getString(CUSTOMER_PHONE),
                         dateCouple.get(1),//time
                         dateCouple.get(0),//date
                         dateCouple2.get(1),//time2
-                        dateCouple2.get(0)//date2
+                        dateCouple2.get(0),//date2
+                        drawableProfile
                 ));
             }
         } catch (Exception e) {
@@ -374,14 +449,12 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(sellerRecyclerViewAdapter);
     }
     public  void getCustomerCmdList(String userId) {
-        String backGroundType="custommerCommandList";
         BackgroundWorker backgroundWorker=new BackgroundWorker(MainActivity.this);
         String tempResult=null;
         try {
-            tempResult=backgroundWorker.execute(backGroundType,userId).get();
+            tempResult=backgroundWorker.execute(CUSTOMER_COMMAND_LIST,userId).get();
             tempResult=(tempResult==null)?"":tempResult;
             Log.d("result", tempResult+"");
-            //Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
 
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -394,7 +467,7 @@ public class MainActivity extends AppCompatActivity {
         try {
 
             JSONObject json = new JSONObject(result);
-            JSONArray jArray = json.getJSONArray("ordersBySellers");
+            JSONArray jArray = json.getJSONArray(ORDERS_BY_SELLERS);
 
             boolean boolTemp;
             Log.d("number_of_cmds", jArray.length()+"");
@@ -402,25 +475,25 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject json_line = jArray.getJSONObject(i);
                 boolTemp= (i % 2 == 0);
                 int imageCode=0;
-                switch (json_line.getString("orderstatus")) {
-                    case "pending":
-                        imageCode = R.drawable.ic_pending_ribbon;
+                switch (json_line.getString(ORDER_STATUS)) {
+                    case PENDING:
+                        imageCode = R.drawable.ic_pending_icon;
                         break;
-                    case "canceled":
-                        imageCode = R.drawable.ic_canceled_ribbon;
+                    case CANCELED:
+                        imageCode = R.drawable.ic_canceled_icon;
                         break;
-                    case "ready":
-                        imageCode = R.drawable.ic_ready_ribbon;
+                    case READY:
+                        imageCode = R.drawable.ic_ready_icon;
                         break;
-                    case "prepared":
-                        imageCode = R.drawable.ic_delivered_ribbon;
+                    case DELIVERED:
+                        imageCode = R.drawable.ic_delivered_icon;
                         break;
-                    case "received":
-                        imageCode = R.drawable.ic_received_ribbon;
+                    case RECEIVED:
+                        imageCode = R.drawable.ic_received_icon;
                         break;
                 }
                 ArrayList<SingleRowShop> shopList=new ArrayList<>();
-                JSONArray shops_jArray = json_line.getJSONArray("shops");
+                JSONArray shops_jArray = json_line.getJSONArray(SHOPS);
 
                 JSONObject shopElement;
                 String shopName;
@@ -428,9 +501,8 @@ public class MainActivity extends AppCompatActivity {
                 // for each shop
                 for (int k = 0; k <shops_jArray.length() ; k++) {
                     shopElement = shops_jArray.getJSONObject(k);
-                    shopName=shopElement.getString("shopName");
 
-                    JSONArray products_jArray = shopElement.getJSONArray("products");
+                    JSONArray products_jArray = shopElement.getJSONArray(PRODUCTS);
                     ArrayList<SingleRowProduct> productsList=new ArrayList<>();
                     JSONObject productElement;
 
@@ -438,8 +510,8 @@ public class MainActivity extends AppCompatActivity {
                     for (int l = 0; l <products_jArray.length() ; l++) {
                         productElement=products_jArray.getJSONObject(l);
 
-                        ArrayList<String> unitPriceList= getNumberCouple(productElement.getString("ttc"));
-                        ArrayList<String> unitQtyList= getNumberCouple(productElement.getString("quantity"));
+                        ArrayList<String> unitPriceList= getNumberCouple(productElement.getString(UNIT_PRICE));
+                        ArrayList<String> unitQtyList= getNumberCouple(productElement.getString(QUANTITY));
                         productsList.add(new SingleRowProduct(
                                         productElement.getString("name"),
                                         unitQtyList.get(0) ,
@@ -452,32 +524,34 @@ public class MainActivity extends AppCompatActivity {
                     }
 
 
-                    shopList.add(new SingleRowShop(shopElement.getString("shopName"),shopElement.getString("shid"),shopElement.getString("osOrderstatus"),"0123456789", productsList));
+                    shopList.add(new SingleRowShop(shopElement.getString(SHOP_NAME),shopElement.getString(SHOP_ID),shopElement.getString(SHOP_STATUS),"0123456789", productsList));
                 }
 
                 ArrayList<SingleRowProduct> detailCmdsList=new ArrayList<>();
 
 
                 ArrayList<String> l=new ArrayList<>();
-                if (userType.equals("customer_login")){
+                if (userType.equals(CUSTOMER_LOGIN)){
                     l= getNumberCouple(json_line.getString("ttc"));
-                } else if (userType.equals("seller_login")){
+                } else if (userType.equals(SELLER_LOGIN)){
                     l= getNumberCouple(json_line.getString("subTotal"));
                 }
                 ArrayList<String> dateCouple= getDateCouple(json_line.getString("created_at"));
+                ArrayList<String> dateCouple2= getDateCouple(json_line.getString("customer_ship_date"));
                 customer_list.add(new CustomerSingleRow(
                         json_line.getString("orid"),//order Id
-                        json_line.getString("first_name")+" "+json_line.getString("last_name"),
+                        json_line.getString(SELLER_FIRST_NAME)+" "+json_line.getString(SELLER_LAST_NAME),
                         imageCode, //for statusIV ribbon
                         l.get(0), //price big part
                         l.get(1),//price decimal part
                         boolTemp,//even and add elements
                         shopList, //command sellerList details for each ingle element
-                        json_line.getString("address"),
-                        json_line.getString("phone"),
-                        json_line.getString("shipTime"),
+                        json_line.getString(SELLER_ADDRESS),
+                        json_line.getString(SELLER_PHONE),
                         dateCouple.get(1),//time
-                        dateCouple.get(0)//date
+                        dateCouple.get(0),//date
+                        dateCouple2.get(1),//time2
+                        dateCouple2.get(0)//date2
                 ));
             }
         } catch (Exception e) {
@@ -574,7 +648,7 @@ public class MainActivity extends AppCompatActivity {
             loginDataBaseAdapter.deleteEntry(storedEmail);
             loginDataBaseAdapter.close();*/
             String result="";
-            String postType=(userType.equals("customer_login"))?"customer_logout":"seller_logout";
+            String postType=(userType.equals(CUSTOMER_LOGIN))?"customer_logout":"seller_logout";
             BackgroundWorker backgroundWorker=new BackgroundWorker(MainActivity.this);
             try {
                 result= backgroundWorker.execute(postType,userId).get();
@@ -583,7 +657,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Log.d("deconnection_result", result+"");
+            Log.d("deconnexion_result", result+"");
 
             sharedPreferences.edit().clear().apply();
             sellerList.clear();
@@ -601,39 +675,4 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-}
-
-
-class SnappingLinearLayoutManager extends LinearLayoutManager {
-
-    public SnappingLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
-        super(context, orientation, reverseLayout);
-    }
-
-    @Override
-    public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state,
-                                       int position) {
-        RecyclerView.SmoothScroller smoothScroller = new TopSnappedSmoothScroller(recyclerView.getContext());
-        smoothScroller.setTargetPosition(position);
-        startSmoothScroll(smoothScroller);
-    }
-
-    private class TopSnappedSmoothScroller extends LinearSmoothScroller {
-        public TopSnappedSmoothScroller(Context context) {
-            super(context);
-
-        }
-
-        @Override
-        public PointF computeScrollVectorForPosition(int targetPosition) {
-            return SnappingLinearLayoutManager.this
-                    .computeScrollVectorForPosition(targetPosition);
-        }
-
-        @Override
-        protected int getVerticalSnapPreference() {
-            return SNAP_TO_START;
-        }
-    }
-
 }

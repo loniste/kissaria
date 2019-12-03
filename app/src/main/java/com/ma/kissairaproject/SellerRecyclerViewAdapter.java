@@ -11,13 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -30,6 +27,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewAdapter.MyViewHolder> {
 
@@ -63,6 +62,8 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
         TextView creation_time;
         TextView creation_date;
         TextView full_name;
+        CircleImageView profil;
+
 
 
         public TextView bouton1;
@@ -96,6 +97,7 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
             this.full_name = view.findViewById(R.id.full_name);
             this.rv_detail_cmd = view.findViewById(R.id.rv_detail_cmd);
             this.v = view;
+            this.profil=view.findViewById(R.id.profile_image);
         }
         View getView() {
             return v;
@@ -114,7 +116,7 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
     @Override
     public SellerRecyclerViewAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // create a new view
-        View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row_seller2, parent, false);
+        View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row_seller, parent, false);
         MyViewHolder myViewHolder = new MyViewHolder(v);
         return myViewHolder;
     }
@@ -181,6 +183,8 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
         holder.shipDate.setText(mDataset.get(position).getShip_date());
         holder.full_name.setText(mDataset.get(position).getFull_name());
         holder.phone_number=mDataset.get(position).getPhone_number();
+//        holder.profil.setBackground(mDataset.get(position).getDrawableProfile());
+        holder.profil.setImageDrawable(mDataset.get(position).getDrawableProfile());
         Log.d("holder.getItemId()",holder.getItemId()+"hasStableIds"+ this.hasStableIds());
         if (holder.getItemId()==prev_expanded){
             displayHidableViewOnRegistred(holder, holder.getLayoutPosition());
@@ -336,7 +340,7 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
                     try {
                         String result=backgroundWorker.execute("post_status_seller",userId,mDataset.get(position).getCmd(),"ready").get();
                         JSONObject jsonObject = new JSONObject(result);
-                        if (!jsonObject.getString("statusIV").equals("success")){
+                        if (!jsonObject.getString("status").equals("success")){
                             //TODO: setting back the previous buttons statusIV
                         }
                     } catch (ExecutionException e) {
@@ -374,7 +378,7 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
                     try {
                         String result=backgroundWorker.execute("post_status_seller",userId,mDataset.get(position).getCmd(),"canceled").get();
                         JSONObject jsonObject = new JSONObject(result);
-                        if (!jsonObject.getString("statusIV").equals("success")){
+                        if (!jsonObject.getString("status").equals("success")){
                             //TODO: setting back the previous buttons statusIV
                         }
                     } catch (ExecutionException e) {
@@ -415,7 +419,7 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
                     try {
                         String result=backgroundWorker.execute("post_status_seller",userId,mDataset.get(position).getCmd(),"delivered").get();
                         JSONObject jsonObject = new JSONObject(result);
-                        if (!jsonObject.getString("statusIV").equals("success")){
+                        if (!jsonObject.getString("status").equals("success")){
                             //TODO: setting back the previous buttons statusIV
                         }
                     } catch (ExecutionException e) {
@@ -450,7 +454,7 @@ class SellerRecyclerViewAdapter extends RecyclerView.Adapter<SellerRecyclerViewA
                     try {
                         String result=backgroundWorker.execute("post_status_seller",userId,mDataset.get(position).getCmd(),"canceled").get();
                         JSONObject jsonObject = new JSONObject(result);
-                        if (!jsonObject.getString("statusIV").equals("success")){
+                        if (!jsonObject.getString("status").equals("success")){
                             //TODO: setting back the previous buttons statusIV
                         }
                     } catch (ExecutionException e) {

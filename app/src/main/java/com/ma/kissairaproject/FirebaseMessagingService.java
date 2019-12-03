@@ -1,29 +1,22 @@
 package com.ma.kissairaproject;
 
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Looper;
+import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.messaging.RemoteMessage;
 
-import android.os.Handler;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,10 +26,30 @@ import java.util.Map;
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
     private static final String TAG ="TAG3" ;
     private static final String CHANNEL_ID = "CHANNEL_ID";
-    private static String token;
-
+    private static final String NOTIFICATION_ID = "NOTIFICATION_ID" ;
     private static final String USER_INFO = "USER_INFO";
     private static final String IS_IN_FORGROUND = "IS_IN_FORGROUND";
+    private static final String SHID_ID = "SHID_ID";
+    private static final String ORDER_ID = "ORDER_ID";
+    private static final String STRING_OBJECT = "STRING_OBJECT";
+
+    private static int requestCode = 1;
+    private static int notificationID = 777;
+    private static String token;
+
+
+
+    String title="";
+    String body="";
+    String type="";
+    String shid="";
+    String orid="";
+    Uri uri;
+    Bundle bundle;
+
+    NotificationCompat.Builder builder;
+    PendingIntent tapPendingIntent;
+    JSONObject object;
 
 
     @Override
@@ -55,6 +68,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         return token;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
@@ -63,160 +77,135 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         SharedPreferences sharedPreferences;
         sharedPreferences = getBaseContext().getSharedPreferences(USER_INFO, MODE_PRIVATE);
-
-
-
-        createNotificationChannel();
-
-
-
-
-        /*Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(new Runnable() {
-            public void run() {
-                Toast.makeText(getApplicationContext(), "New notification !", Toast.LENGTH_SHORT).show();
-
-                Intent intent=new Intent(getApplicationContext(), MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                getApplicationContext().startActivity(intent);
-            }
-        });
-*/
-
-
-
-        // This function will create an intent. This intent must take as parameter the "unique_name" that you registered your activity with
-
         Log.e("dataChat",remoteMessage.getData().toString());
-
         Map<String, String> params = remoteMessage.getData();
-        JSONObject object = new JSONObject(params);
+        object = new JSONObject(params);
         Log.d("JSON_OBJECT", object.toString());
 
-        String title="";
-        String body="";
-        String type="";
-        String shid="";
-        String orid="";
         try {
             title=  object.getString("title");
             body=   object.getString("body");
             type=   object.getString("type");
             shid=   object.getString("shid");
             orid=   object.getString("orid");
+            Log.d("received_by_notif","orid = "+orid);
+            Log.d("received_by_notif","shid = "+shid);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
+        uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         // Create an Intent for the activity you want to start
         Intent tapIntent = new Intent(this, MainActivity.class);
         // Create the TaskStackBuilder and add the intent, which inflates the back stack
         tapIntent.setAction("TAP");
-        tapIntent.putExtra("shid", shid);
-        tapIntent.putExtra("orid", orid);
+
+        Bundle bundle= new Bundle();
+        bundle.putString(SHID_ID, shid);
+        bundle.putString(ORDER_ID, orid);
+        bundle.putString(STRING_OBJECT, object.toString());
+
+        tapIntent.putExtras(bundle);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addNextIntentWithParentStack(tapIntent);
         // Get the PendingIntent containing the entire back stack
-        PendingIntent tapPendingIntent =
+        tapPendingIntent =
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-
-
-
         if (type.equals("validate_reception")){
-            Intent yesIntent = new Intent(this, NotifReceiver.class);
-            yesIntent.setAction("YES");
-            yesIntent.putExtra("shid", shid);
-            yesIntent.putExtra("orid", orid);
-            PendingIntent yesPendingIntent =
-                    PendingIntent.getBroadcast(this, 0, yesIntent, 0);
 
-
-            Intent noIntent = new Intent(this, NotifReceiver.class);
-            noIntent.setAction("YES");
-            noIntent.putExtra("shid", shid);
-            noIntent.putExtra("orid", orid);
-            PendingIntent noPendingIntent =
-                    PendingIntent.getBroadcast(this, 0, noIntent, 0);
-
-
-
-
-
-
-
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1")
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle(title)
-                    .setContentText(body)
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .setContentIntent(tapPendingIntent)
-                    .setSound(uri)
-                    .addAction(0, getString(R.string.OUI), yesPendingIntent)
-                    .addAction(0, getString(R.string.NON),noPendingIntent)
-                    .setAutoCancel(true);
-
+            buildYesNoNotification();
 
             //push notification only if activity is NOT running
             if (sharedPreferences.contains(IS_IN_FORGROUND)){
                 boolean isActivityInFG = sharedPreferences.getBoolean(IS_IN_FORGROUND, false);
-                if (!isActivityInFG){
-                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-                    notificationManager.notify(1, builder.build());
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+                notificationManager.notify(notificationID, builder.build());
+                if (isActivityInFG){
+                    sendBroadcastToRefresh();//if app is running so just refresh app instead
                 }
             }
         }
-
         if (type.equals("refresh")){
-
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle(title)
-                    .setContentText(body)
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .setContentIntent(tapPendingIntent)
-                    .setSound(uri);
-
+            buildStandardNotification();
             if (sharedPreferences.contains(IS_IN_FORGROUND)){
                 boolean isActivityInFG = sharedPreferences.getBoolean(IS_IN_FORGROUND, false);
-                if (!isActivityInFG){
+                if (!isActivityInFG){// if activity is not running then show notification
+//                    notificationID++;
+//                    bundle.putInt(NOTIFICATION_ID, notificationID);
                     NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-                    notificationManager.notify(2, builder.build());
+                    notificationManager.notify(notificationID, builder.build());
                 }
+                else  sendBroadcastToRefresh();//if app is running so just refresh app instead
             }
-
-
-
-
-            Intent intent = new Intent("unique_name");
-            //put whatever data you want to send, if any
-            intent.putExtra("message", object.toString());
-            //send broadcast
-            getApplicationContext().sendBroadcast(intent);
         }
-
         Log.d("type_is:", type);
-
     }
-    private void createNotificationChannel(){
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
+
+    private void buildStandardNotification() {
+        String notificationChannelId =
+                NotificationUtil.createNotificationChannel(this);
+        builder = new NotificationCompat.Builder(this, notificationChannelId)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(tapPendingIntent)
+                .setSound(uri);
+    }
+
+    private void sendBroadcastToRefresh() {
+        Intent intent = new Intent("unique_name");
+        //put whatever data you want to send, if any
+        intent.putExtra("message", object.toString());
+        //send broadcast
+        getApplicationContext().sendBroadcast(intent);
+    }
+
+    private void buildYesNoNotification() {
+        title="Confirmation de la réception";
+        body="Avez-vous bien reçu votre commande?";
+        Intent yesIntent = new Intent(this, NotifReceiver.class);
+        yesIntent.setAction("YES");
+        Log.d("orid_inFirebase",orid);
+
+        bundle= new Bundle();
+        bundle.putString(SHID_ID, shid);
+        bundle.putString(ORDER_ID, orid);
+        bundle.putString(STRING_OBJECT, object.toString());
+        notificationID++;
+        bundle.putInt(NOTIFICATION_ID, notificationID);
+        Log.d("sent_notification_id", notificationID+"");
+
+
+        yesIntent.putExtras(bundle);
+        requestCode++;//I heard that changing request code will ensure not using the sae intent
+        PendingIntent yesPendingIntent =
+                PendingIntent.getBroadcast(this, requestCode, yesIntent, 0);
+        Intent noIntent = new Intent(this, NotifReceiver.class);
+        noIntent.setAction("NO");
+
+        bundle= new Bundle();
+        bundle.putString(SHID_ID, shid);
+        bundle.putString(ORDER_ID, orid);
+        bundle.putString(STRING_OBJECT, object.toString());
+
+        requestCode++;
+        noIntent.putExtras(bundle);
+        PendingIntent noPendingIntent =
+                PendingIntent.getBroadcast(this, requestCode, noIntent, 0);
+        String notificationChannelId =
+                NotificationUtil.createNotificationChannel(this);
+        builder = new NotificationCompat.Builder(this, notificationChannelId)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(tapPendingIntent)
+                .setSound(uri)
+                .addAction(0, getString(R.string.OUI), yesPendingIntent)
+                .addAction(0, getString(R.string.NON),noPendingIntent)
+                .setAutoCancel(true);
     }
 }
 

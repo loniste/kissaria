@@ -322,7 +322,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
 
-            android:visibility="visible"
+            android:visibility="gone"
             card_view:layout_constraintLeft_toRightOf="@id/ver_right_ribbon"
             card_view:layout_constraintRight_toRightOf="parent"
 

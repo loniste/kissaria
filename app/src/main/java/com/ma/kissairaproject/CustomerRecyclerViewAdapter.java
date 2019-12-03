@@ -10,12 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,32 +43,31 @@ class CustomerRecyclerViewAdapter extends RecyclerView.Adapter<CustomerRecyclerV
     // you provide access to all the views for a data item in a view holder
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView cmd;
-        public ImageView status;
+        public ImageView statusIV;
+        public TextView statusTV;
+        public View statusRibbon;
         public TextView price;
         public TextView afterCommaPrice;
         public RecyclerView rv_detail_cmd;
-        TextView address;
-        TextView customer_ship_date;
         TextView creation_time;
         TextView creation_date;
-        TextView full_name;
+        TextView shipTime;
+        TextView shipDate;
 
-        public int visibilityState=0;
         View v;
         public MyViewHolder(View view) {
             super(view);
             this.cmd = view.findViewById(R.id.commande);
-            this.status = view.findViewById(R.id.status_tv);
+            this.statusIV = view.findViewById(R.id.status_iv);
+            this.statusTV = view.findViewById(R.id.status_tv);
+            this.statusRibbon = view.findViewById(R.id.status_ribbon);
             this.price = view.findViewById(R.id.price);
             this.afterCommaPrice = view.findViewById(R.id.afterCommaPrice);
 
-
-
-            this.address = view.findViewById(R.id.address);
-            this.customer_ship_date = view.findViewById(R.id.customer_ship_date);
+            this.shipDate = view.findViewById(R.id.customer_ship_date);
+            this.shipTime = view.findViewById(R.id.customer_ship_time);
             this.creation_date = view.findViewById(R.id.creation_date);
             this.creation_time = view.findViewById(R.id.creation_time);
-            this.full_name = view.findViewById(R.id.full_name);
             this.rv_detail_cmd = view.findViewById(R.id.rv_detail_cmd);
             this.v = view;
         }
@@ -115,15 +113,45 @@ class CustomerRecyclerViewAdapter extends RecyclerView.Adapter<CustomerRecyclerV
 //        recycler.getRecycledViewPool().setMaxRecycledViews(holder.getItemViewType(), 0);
 
         holder.cmd.setText(mDataset.get(position).getCmd());
-        holder.status.setImageResource(mDataset.get(position).getStatusCode());
+        holder.statusIV.setImageResource(mDataset.get(position).getStatusCode());
+        switch (mDataset.get(position).getStatusCode()){
+
+            case    R.drawable.ic_pending_icon:
+                holder.statusTV.setText("EN COURS");
+                holder.statusTV.setTextColor(ContextCompat.getColor(holder.statusIV.getContext(),R.color.pending));
+                holder.statusRibbon.setBackgroundColor(ContextCompat.getColor(holder.statusRibbon.getContext(), R.color.pending));
+                break;
+            case R.drawable.ic_ready_icon:
+                holder.statusTV.setText("PRÊT");
+                holder.statusTV.setTextColor(ContextCompat.getColor(holder.statusIV.getContext(),R.color.ready));
+                holder.statusRibbon.setBackgroundColor(ContextCompat.getColor(holder.statusRibbon.getContext(), R.color.ready));
+                break;
+            case R.drawable.ic_delivered_icon:
+                holder.statusTV.setText("Livré");
+                holder.statusTV.setTextColor(ContextCompat.getColor(holder.statusIV.getContext(),R.color.delivered));
+                holder.statusRibbon.setBackgroundColor(ContextCompat.getColor(holder.statusRibbon.getContext(), R.color.delivered));
+                break;
+            case R.drawable.ic_received_icon:
+                holder.statusTV.setText("Reçu");
+                holder.statusTV.setTextColor(ContextCompat.getColor(holder.statusIV.getContext(),R.color.received));
+                holder.statusRibbon.setBackgroundColor(ContextCompat.getColor(holder.statusRibbon.getContext(), R.color.received));
+                break;
+            case R.drawable.ic_canceled_icon:
+                holder.statusTV.setText("Annulé");
+                holder.statusTV.setTextColor(ContextCompat.getColor(holder.statusIV.getContext(),R.color.canceled));
+                holder.statusRibbon.setBackgroundColor(ContextCompat.getColor(holder.statusRibbon.getContext(), R.color.canceled));
+                break;
+        }
+
+
+        holder.statusIV.setImageResource(mDataset.get(position).getStatusCode());
         holder.price.setText(mDataset.get(position).getPrice());
         holder.afterCommaPrice.setText(mDataset.get(position).getAfterCommaPrice());
 
-        holder.address.setText(mDataset.get(position).getAddress());
         holder.creation_time.setText(mDataset.get(position).getCreation_time());
         holder.creation_date.setText(mDataset.get(position).getCreation_date());
-        holder.customer_ship_date.setText(mDataset.get(position).getCustomer_ship_date());
-        holder.full_name.setText(mDataset.get(position).getFull_name());
+        holder.shipTime.setText(mDataset.get(position).getShip_time());
+        holder.shipDate.setText(mDataset.get(position).getShip_date());
 
 
         if (holder.getItemId()==prev_expanded){
@@ -132,13 +160,6 @@ class CustomerRecyclerViewAdapter extends RecyclerView.Adapter<CustomerRecyclerV
         } else  {
             holder.getView().findViewById(R.id.hidable_view).setVisibility(View.GONE);
         }
-        holder.address.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View view) {
-                  Toast.makeText(holder.address.getContext(), holder.address.getText(), Toast.LENGTH_SHORT).show();
-              }
-        });
-
 
         final int GRAY = 0xFFf0f0f0;
         CardView cv= holder.itemView.findViewById(R.id.cv);
@@ -163,11 +184,11 @@ class CustomerRecyclerViewAdapter extends RecyclerView.Adapter<CustomerRecyclerV
             //while here, disable all click listeners, because an exception will be made otherwise*/
             isOnClicksDisabled = true;
             /** expand singleRow */
-            LinearLayout linearLayout = holder.getView().findViewById(R.id.hidable_view);
-            final boolean visibility = linearLayout.getVisibility() == View.VISIBLE;
+            ConstraintLayout constraintLayout = holder.getView().findViewById(R.id.hidable_view);
+            final boolean visibility = constraintLayout.getVisibility() == View.VISIBLE;
             if (!visibility) {
                 //textView.setActivated(true);
-                linearLayout.setVisibility(View.VISIBLE);
+                constraintLayout.setVisibility(View.VISIBLE);
                 Log.d("qsd", "prev_expanded: " + String.valueOf(prev_expanded));
 
                 holder.rv_detail_cmd.setLayoutManager(new LinearLayoutManager(context));
@@ -179,7 +200,6 @@ class CustomerRecyclerViewAdapter extends RecyclerView.Adapter<CustomerRecyclerV
                     MyViewHolder vh = (MyViewHolder) recycler.findViewHolderForItemId(prev_expanded);
                     Log.d("qsd", "prev_expanded: " + String.valueOf(prev_expanded));
                     if (vh != null) {
-                        vh.visibilityState = 0;
                         vh.getView().findViewById(R.id.hidable_view).setVisibility(View.GONE);
                         Log.d("vh", "NOT NULL");
 
@@ -192,7 +212,7 @@ class CustomerRecyclerViewAdapter extends RecyclerView.Adapter<CustomerRecyclerV
                 Log.d("qsd", "the view is already visible");
                 //holder.itemView.setActivated(false);
                 prev_expanded=-1;
-                linearLayout.setVisibility(View.GONE);
+                constraintLayout.setVisibility(View.GONE);
             }
             LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recycler.getLayoutManager();
             View someView = linearLayoutManager.getChildAt(0);
@@ -218,11 +238,11 @@ class CustomerRecyclerViewAdapter extends RecyclerView.Adapter<CustomerRecyclerV
     }
     private void displayHidableViewOnRegistred(MyViewHolder holder, int position) {
         /** expand singleRow */
-        LinearLayout linearLayout = holder.getView().findViewById(R.id.hidable_view);
-        final boolean visibility = linearLayout.getVisibility() == View.VISIBLE;
+        ConstraintLayout constraintLayout = holder.getView().findViewById(R.id.hidable_view);
+        final boolean visibility = constraintLayout.getVisibility() == View.VISIBLE;
         if (!visibility) {
             //textView.setActivated(true);
-            linearLayout.setVisibility(View.VISIBLE);
+            constraintLayout.setVisibility(View.VISIBLE);
             Log.d("qsd", "prev_expanded: " + String.valueOf(prev_expanded));
 
             holder.rv_detail_cmd.setLayoutManager(new LinearLayoutManager(context));
@@ -234,7 +254,6 @@ class CustomerRecyclerViewAdapter extends RecyclerView.Adapter<CustomerRecyclerV
                 MyViewHolder vh = (MyViewHolder) recycler.findViewHolderForItemId(prev_expanded);
                 Log.d("qsd", "prev_expanded: " + String.valueOf(prev_expanded));
                 if (vh != null) {
-                    vh.visibilityState = 0;
                     vh.getView().findViewById(R.id.hidable_view).setVisibility(View.GONE);
                     Log.d("vh", "NOT NULL");
 
@@ -247,7 +266,7 @@ class CustomerRecyclerViewAdapter extends RecyclerView.Adapter<CustomerRecyclerV
             Log.d("qsd", "the view is already visible");
             prev_expanded=-1;
             //holder.itemView.setActivated(false);
-            linearLayout.setVisibility(View.GONE);
+            constraintLayout.setVisibility(View.GONE);
         }
     }
     // Return the size of your dataset (invoked by the layout manager)
@@ -282,7 +301,6 @@ class RvShopDetailsAdapter extends RecyclerView.Adapter<RvShopDetailsAdapter.MyV
         public ImageView callButton;
         public TextView bouton1;
         public TextView bouton2;
-        public TextView bouton3;
 
         View v;
         MyViewHolder(View view) {
@@ -292,7 +310,6 @@ class RvShopDetailsAdapter extends RecyclerView.Adapter<RvShopDetailsAdapter.MyV
 
             this.bouton1 = view.findViewById(R.id.txtView1);
             this.bouton2 = view.findViewById(R.id.txtView2);
-            this.bouton3 = view.findViewById(R.id.txtView3);
             this.callButton = view.findViewById(R.id.call);
 
 
@@ -368,14 +385,13 @@ class RvShopDetailsAdapter extends RecyclerView.Adapter<RvShopDetailsAdapter.MyV
                     //make buttons gone
                     holder.bouton1.setVisibility(View.GONE);
                     holder.bouton2.setVisibility(View.GONE);
-                    holder.bouton3.setVisibility(View.GONE);
 
                     BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
                     try {
-                        String result=backgroundWorker.execute("post_status_customer", orId, shopList.get(position).getshId(),"received").get();
+                        String result=backgroundWorker.execute("post_status_customer",shopList.get(position).getshId()  , orId,"received").get();
                         JSONObject jsonObject = new JSONObject(result);
-                        if (!jsonObject.getString("statusIV").equals("success")){
-                            //TODO: setting back the previous buttons statusIV
+                        if (!jsonObject.getString("status").equals("success")){
+                            //TODO: setting back the previous buttons status
                         }
                     } catch (ExecutionException e) {
                         e.printStackTrace();
@@ -393,19 +409,18 @@ class RvShopDetailsAdapter extends RecyclerView.Adapter<RvShopDetailsAdapter.MyV
             holder.bouton2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // change statusIV icon
+                    // change status icon
                     holder.shopStatus.setBackgroundColor(ContextCompat.getColor(context,R.color.canceled));
                     //make buttons gone
                     holder.bouton1.setVisibility(View.GONE);
                     holder.bouton2.setVisibility(View.GONE);
-                    holder.bouton3.setVisibility(View.GONE);
 
                     BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
                     try {
-                        String result=backgroundWorker.execute("post_status_customer",orId,shopList.get(position).getshId(),"canceled").get();
+                        String result=backgroundWorker.execute("post_status_customer",shopList.get(position).getshId() ,orId,"canceled").get();
                         JSONObject jsonObject = new JSONObject(result);
-                        if (!jsonObject.getString("statusIV").equals("success")){
-                            //TODO: setting back the previous buttons statusIV
+                        if (!jsonObject.getString("status").equals("success")){
+                            //TODO: setting back the previous buttons status
 
                         }
                     } catch (ExecutionException e) {
@@ -418,14 +433,12 @@ class RvShopDetailsAdapter extends RecyclerView.Adapter<RvShopDetailsAdapter.MyV
 
                 }
             });
-            holder.bouton3.setVisibility(View.GONE);
         }
         /**processing buttons in a single item when statusIV is canceled or received*/
         else if (shopList.get(position).getShopStatus().equals("canceled")  || shopList.get(position).getShopStatus().equals("received")){
 
             holder.bouton1.setVisibility(View.GONE);
             holder.bouton2.setVisibility(View.GONE);
-            holder.bouton3.setVisibility(View.GONE);
         }
         if (shopList.get(position).getShopStatus().equals("pending")) {
             holder.bouton1.setVisibility(View.VISIBLE);
@@ -440,14 +453,13 @@ class RvShopDetailsAdapter extends RecyclerView.Adapter<RvShopDetailsAdapter.MyV
                     //make buttons gone
                     holder.bouton1.setVisibility(View.GONE);
                     holder.bouton2.setVisibility(View.GONE);
-                    holder.bouton3.setVisibility(View.GONE);
 
 
                     BackgroundWorker backgroundWorker=new BackgroundWorker(holder.bouton1.getContext());
                     try {
-                        String result=backgroundWorker.execute("post_status_customer",orId,shopList.get(position).getshId(),"canceled").get();
+                        String result=backgroundWorker.execute("post_status_customer",shopList.get(position).getshId() ,orId,"canceled").get();
                         JSONObject jsonObject = new JSONObject(result);
-                        if (!jsonObject.getString("statusIV").equals("success")){
+                        if (!jsonObject.getString("status").equals("success")){
                             //TODO: setting back the previous buttons statusIV
                         }
                     } catch (ExecutionException e) {
@@ -460,10 +472,9 @@ class RvShopDetailsAdapter extends RecyclerView.Adapter<RvShopDetailsAdapter.MyV
                 }
             });
             holder.bouton2.setVisibility(View.GONE);
-            holder.bouton3.setVisibility(View.GONE);
         }
         else {
-            Log.d("status_problem", "statusIV problem");
+            Log.d("status_problem", "status problem");
         }
     }
     @Override

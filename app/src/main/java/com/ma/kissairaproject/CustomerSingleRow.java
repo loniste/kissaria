@@ -12,15 +12,19 @@ class CustomerSingleRow {
     ArrayList<SingleRowShop> detailShopList;
     String address;
     String phone_number;
-    String customer_ship_date;
     String creation_time;
     String creation_date;
+
+
+
+    String ship_time;
+    String ship_date;
 
 
     public CustomerSingleRow(){
         this.cmd="123";
         this.full_name="name surname";
-        this.statusCode=R.drawable.ic_pending_ribbon;
+        this.statusCode=R.drawable.ic_pending_icon;
         this.price="99.";
         this.afterCommaPrice="99";
         this.recent=true;
@@ -28,7 +32,6 @@ class CustomerSingleRow {
         detailShopList.add(new SingleRowShop());
         this.address="Adrresse";
         this.phone_number="0606060606";
-        this.customer_ship_date="2019-12-10 20:20:20";
         this.creation_time="50:50";
         this.creation_date="2019-20-20";
     }
@@ -42,9 +45,10 @@ class CustomerSingleRow {
                              ArrayList<SingleRowShop> detailShopList,
                              String address,
                              String phone_number,
-                             String customer_ship_date,
                              String creation_time,
-                             String creation_date
+                             String creation_date,
+                             String ship_time,
+                             String ship_date
 
     ) {
 
@@ -57,9 +61,10 @@ class CustomerSingleRow {
         this.detailShopList=new ArrayList<>(detailShopList) ;
         this.address=address;
         this.phone_number=phone_number;
-        this.customer_ship_date=customer_ship_date;
         this.creation_time=creation_time;
         this.creation_date=creation_date;
+        this.ship_date=ship_date;
+        this.ship_time=ship_time;
     }
 
     public void setCmd(String cmd) {
@@ -114,14 +119,19 @@ class CustomerSingleRow {
         return phone_number;
     }
 
-    public String getCustomer_ship_date() {
-        return customer_ship_date;
-    }
 
     public String getCreation_date() {
         return creation_date;
     }
     public String getCreation_time() {
         return creation_time;
+    }
+
+    public String getShip_time() {
+        return ship_time;
+    }
+
+    public String getShip_date() {
+        return ship_date;
     }
 }

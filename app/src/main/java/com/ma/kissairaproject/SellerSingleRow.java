@@ -1,5 +1,7 @@
 package com.ma.kissairaproject;
 
+import android.graphics.drawable.Drawable;
+
 import java.util.ArrayList;
 
 class SellerSingleRow {
@@ -19,12 +21,13 @@ class SellerSingleRow {
     private String phone_number;
     private String creation_time;
     private String creation_date;
+    private Drawable drawableProfile;
 
 
     public SellerSingleRow(){
         this.cmd="123";
         this.full_name="name surname";
-        this.statusCode=R.drawable.ic_pending_ribbon;
+        this.statusCode=R.drawable.ic_pending_icon;
         this.price="99.";
         this.afterCommaPrice="99";
         this.recent=true;
@@ -48,7 +51,8 @@ class SellerSingleRow {
                            String creation_time,
                            String creation_date,
                            String ship_time,
-                           String ship_date
+                           String ship_date,
+                           Drawable drawableProfile
 
     ) {
 
@@ -66,6 +70,8 @@ class SellerSingleRow {
 
         this.ship_time=ship_time;
         this.ship_date=ship_date;
+
+        this.drawableProfile =drawableProfile;
     }
 
     public void setCmd(String cmd) {
@@ -172,5 +178,13 @@ class SellerSingleRow {
 
     public String getShip_date() {
         return ship_date;
+    }
+
+    public Drawable getDrawableProfile() {
+        return drawableProfile;
+    }
+
+    public void setDrawableProfile(Drawable drawableProfile) {
+        this.drawableProfile = drawableProfile;
     }
 }

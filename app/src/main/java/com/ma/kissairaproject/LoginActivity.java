@@ -45,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
     String responseCode = null;
     String firstName = "";
     String lastName = "";
+    String profileImageLink = "";
 
     private static final String USER_INFO = "USER_INFO";
     private static final String EMAIL = "EMAIL";
@@ -53,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TYPE = "TYPE" ;
     private static final String FIRST_NAME = "FIRST_NAME" ;
     private static final String LAST_NAME = "LAST_NAME" ;
+    private static final String PROFILE_IMAGE_LINK = "PROFILE_IMAGE_LINK" ;
 
     JSONObject jsonObject;
 
@@ -127,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
             result=(result==null)?"":result;
             Log.d("jasonobject", result+"");
             jsonObject = new JSONObject(result);
-            status = jsonObject.getString("statusIV");
+            status = jsonObject.getString("status");
             responseCode = jsonObject.getString("code");
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -150,6 +152,7 @@ public class LoginActivity extends AppCompatActivity {
                                     userId = jsonObject.getString("shid");
                                     firstName = jsonObject.getString("first_name");
                                     lastName = jsonObject.getString("last_name");
+                                    profileImageLink = jsonObject.getString("image");
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -166,7 +169,7 @@ public class LoginActivity extends AppCompatActivity {
                                     result = new BackgroundWorker(LoginActivity.this).execute(userType, email, password, token).get();
                                     result=(result==null)?"":result;
                                     jsonObject = new JSONObject(result);
-                                    status = jsonObject.getString("statusIV");
+                                    status = jsonObject.getString("status");
                                     responseCode=jsonObject.getString("code");
                                     Log.d("resultat 123",result+"" );
                                 } catch (ExecutionException e) {
@@ -190,6 +193,9 @@ public class LoginActivity extends AppCompatActivity {
                                                             userId = jsonObject.getString("cuid");
                                                             firstName = jsonObject.getString("first_name");
                                                             lastName = jsonObject.getString("last_name");
+                                                            profileImageLink = jsonObject.getString("image");
+
+
                                                         } catch (JSONException e) {
                                                             e.printStackTrace();
                                                         }
@@ -256,6 +262,7 @@ public class LoginActivity extends AppCompatActivity {
                 .putString(TYPE, userType)
                 .putString(FIRST_NAME, firstName)
                 .putString(LAST_NAME, lastName)
+                .putString(PROFILE_IMAGE_LINK,profileImageLink)
                 .apply();
 
         Toast.makeText(this, "user userType is: " + userType, Toast.LENGTH_SHORT).show();
@@ -277,6 +284,7 @@ public class LoginActivity extends AppCompatActivity {
         password="";
         firstName="";
         lastName="";
+        profileImageLink="";
         userType ="seller_login";
         result =null;
         status = null;

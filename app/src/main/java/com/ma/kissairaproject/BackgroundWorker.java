@@ -4,6 +4,8 @@ package com.ma.kissairaproject;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -51,6 +53,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
         String sellerLogOutUrl="https://dolimoni.com/kissaria/rec/login/apiSellerLogout";
         String customerLogOutUrl="https://dolimoni.com/kissaria/rec/login/apiUserLogout";
         String isOrderReceivedUrl="https://dolimoni.com/kissaria/rec/user/api/orders/isOrderReceived";
+        String imageUrl="https://image.shutterstock.com/image-vector/shield-letter-s-logosafesecureprotection-logomodern-260nw-633031571.jpg";
         switch (type) {
             case "seller_login":
                 try {
@@ -387,7 +390,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                     String post_data
                             = URLEncoder.encode("shid", "UTF-8") + "=" + URLEncoder.encode(shid, "UTF-8") + "&"
                             + URLEncoder.encode("orid", "UTF-8") + "=" + URLEncoder.encode(orid, "UTF-8") +"&"
-                            + URLEncoder.encode("statusIV", "UTF-8") + "=" + URLEncoder.encode(status, "UTF-8");
+                            + URLEncoder.encode("status", "UTF-8") + "=" + URLEncoder.encode(status, "UTF-8");
 
                     Log.d("poststatusSeller_bg_url",post_data);
 
@@ -434,9 +437,9 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                     BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "utf-8"));
                     Log.d("poststatusCus_ready_bg", status);
                     String post_data
-                            = URLEncoder.encode("orid", "UTF-8") + "=" + URLEncoder.encode(shid, "UTF-8") + "&"
-                            + URLEncoder.encode("shid", "UTF-8") + "=" + URLEncoder.encode(orid, "UTF-8") +"&"
-                            + URLEncoder.encode("statusIV", "UTF-8") + "=" + URLEncoder.encode(status, "UTF-8");
+                            = URLEncoder.encode("shid", "UTF-8") + "=" + URLEncoder.encode(shid, "UTF-8") + "&"
+                            + URLEncoder.encode("orid", "UTF-8") + "=" + URLEncoder.encode(orid, "UTF-8") +"&"
+                            + URLEncoder.encode("status", "UTF-8") + "=" + URLEncoder.encode(status, "UTF-8");
 
                     Log.d("poststatusCus_bg_post",post_data);
 
@@ -519,6 +522,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
         return null;
     }
 
+
     @Override
     protected void onPreExecute() {
 //        alertDialog=new AlertDialog.Builder(context).create();
@@ -567,3 +571,4 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
         }
     }
 }
+
