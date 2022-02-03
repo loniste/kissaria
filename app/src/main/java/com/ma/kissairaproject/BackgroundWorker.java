@@ -43,16 +43,16 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... params) {
         String type=params[0];
 
-        String register_url="http://192.168.1.183//projet/register.php";
-        String SellerLoginUrl="https://dolimoni.com/kissaria/rec/login/apiCheckSellerlogin";
-        String customerLoginUrl="https://dolimoni.com/kissaria/rec/login/apiCheckUserlogin";
-        String sellerCommandList_url="https://dolimoni.com/kissaria/rec/seller/api/orders/apiGetAllOrders/";//the url is completed by then with the userId
-        String customerCommandList_url="https://dolimoni.com/kissaria/rec/user/api/orders/apiGetAllOrders/";//the url is completed by then with the userId
-        String postStatusSellerUrl="https://dolimoni.com/kissaria/rec/seller/api/orders/apiChangeStatus";
-        String postStatusCustomerUrl="https://dolimoni.com/kissaria/rec/user/api/orders/apiChangeStatusForShop";
-        String sellerLogOutUrl="https://dolimoni.com/kissaria/rec/login/apiSellerLogout";
-        String customerLogOutUrl="https://dolimoni.com/kissaria/rec/login/apiUserLogout";
-        String isOrderReceivedUrl="https://dolimoni.com/kissaria/rec/user/api/orders/isOrderReceived";
+        String register_url="http://rec.assouak.ma//register.php";
+        String SellerLoginUrl="http://rec.assouak.ma//login/apiCheckSellerlogin";
+        String customerLoginUrl="http://rec.assouak.ma//login/apiCheckUserlogin";
+        String sellerCommandList_url="http://rec.assouak.ma//seller/api/orders/apiGetAllOrders/";//the url is completed by then with the userId
+        String customerCommandList_url="http://rec.assouak.ma//user/api/orders/apiGetAllOrders/";//the url is completed by then with the userId
+        String postStatusSellerUrl="http://rec.assouak.ma//seller/api/orders/apiChangeStatus";
+        String postStatusCustomerUrl="http://rec.assouak.ma//user/api/orders/apiChangeStatusForShop";
+        String sellerLogOutUrl="http://rec.assouak.ma//login/apiSellerLogout";
+        String customerLogOutUrl="http://rec.assouak.ma//login/apiUserLogout";
+        String isOrderReceivedUrl="http://rec.assouak.ma//user/api/orders/isOrderReceived";
         String imageUrl="https://image.shutterstock.com/image-vector/shield-letter-s-logosafesecureprotection-logomodern-260nw-633031571.jpg";
         switch (type) {
             case "seller_login":
@@ -90,14 +90,10 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                     }
 
                     Log.d("res_seller_login_bg",String.valueOf(result));
-
-
                     bufferedReader.close();
                     inputStream.close();
                     httpURLConnection.disconnect();
                     return result;
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

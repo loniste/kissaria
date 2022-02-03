@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vertical_left_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.07"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vertical_right_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.93" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/ver_right_toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.14" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/ver_left_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.88" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/hor_upon_toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.02" />
+
+
+    <ImageView
+        android:id="@+id/toggle"
+        android:transitionName="toggle"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:onClick="triggerNavDrawer"
+        android:src="@drawable/ic_toggle_button"
+
+        app:layout_constraintStart_toEndOf="@id/vertical_left_activity"
+        app:layout_constraintEnd_toStartOf="@id/ver_right_toggle"
+        app:layout_constraintTop_toTopOf="@+id/hor_upon_toggle"
+
+
+        />
+
+    <ImageView
+        android:id="@+id/dots"
+
+        android:src="@drawable/ic_dots"
+        android:layout_width="0dp"
+
+        android:layout_height="wrap_content"
+
+
+        app:layout_constraintStart_toEndOf="@id/ver_left_language"
+        app:layout_constraintEnd_toStartOf="@id/vertical_right_language"
+        app:layout_constraintTop_toTopOf="@+id/hor_upon_toggle"
+
+        android:scaleType="fitStart"
+        tools:ignore="ContentDescription" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/hor_under_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.07" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/right_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.7" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/left_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.30" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/hor_upon_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.02" />
+
+    <ImageView
+        android:id="@+id/kdipa"
+
+        android:layout_width="0dp"
+
+        android:layout_height="0dp"
+
+        android:scaleType="centerInside"
+
+        android:transitionName="logo"
+
+        android:src="@drawable/am_logo_v2"
+        app:layout_constraintBottom_toTopOf="@+id/hor_under_logo"
+
+
+        app:layout_constraintTop_toTopOf="@+id/hor_upon_logo"
+
+        app:layout_constraintStart_toEndOf="@id/left_logo"
+        app:layout_constraintEnd_toStartOf="@id/right_logo"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="ContentDescription"
+
+
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/top_notification_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.011" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/left_notification_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.904" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/right_notification_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.946" />
+<!--    <TextView
+            android:textSize="@dimen/normal"-->
+<!--        android:id="@+id/notification_badge"-->
+
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        app:layout_constraintDimensionRatio="1:1"-->
+
+<!--        app:layout_constraintTop_toBottomOf="@id/top_notification_badge"-->
+<!--        app:layout_constraintStart_toEndOf="@id/left_notification_badge"-->
+<!--        app:layout_constraintEnd_toStartOf="@id/right_notification_badge"-->
+<!--        android:text="1"-->
+<!--        android:textSize="@dimen/small"-->
+
+<!--        android:gravity="center"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:background="@drawable/notification_badge"-->
+<!--        android:fontFamily="@font/roboto_condensed_bold"-->
+
+<!--        />-->
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

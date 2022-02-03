@@ -19,6 +19,7 @@ class CustomerSingleRow {
 
     String ship_time;
     String ship_date;
+    String image;
 
 
     public CustomerSingleRow(){

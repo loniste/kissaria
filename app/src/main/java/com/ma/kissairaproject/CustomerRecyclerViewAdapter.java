@@ -440,7 +440,7 @@ class RvShopDetailsAdapter extends RecyclerView.Adapter<RvShopDetailsAdapter.MyV
             holder.bouton1.setVisibility(View.GONE);
             holder.bouton2.setVisibility(View.GONE);
         }
-        if (shopList.get(position).getShopStatus().equals("pending")) {
+        else if (shopList.get(position).getShopStatus().equals("pending")) {
             holder.bouton1.setVisibility(View.VISIBLE);
             holder.bouton1.setText("Annuler");
             setButtonBg(holder.bouton1,R.drawable.canceled_bg);
@@ -474,6 +474,8 @@ class RvShopDetailsAdapter extends RecyclerView.Adapter<RvShopDetailsAdapter.MyV
             holder.bouton2.setVisibility(View.GONE);
         }
         else {
+            holder.bouton1.setVisibility(View.GONE);
+            holder.bouton2.setVisibility(View.GONE);
             Log.d("status_problem", "status problem");
         }
     }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="UITextView">
+        <attr name="label" format="string" />
+        <attr name="icon_id" format="reference" />
+        <attr name="icon_tint" format="color" />
+        <attr name="text" format="string" />
+
+
+            />
+    </declare-styleable>
+</resources>

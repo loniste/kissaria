@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/disconnect" android:title="Déconnexion"
+    <item android:id="@+id/logout" android:title="Déconnexion"
         android:orderInCategory="100" app:showAsAction="never" />
 
 

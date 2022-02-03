@@ -1,0 +1,3 @@
+Important : Pour utiliser le format de publication d'applications recommandé Android App Bundle, vous devez vous inscrire à la signature d'application Google Play avant d'importer votre app bundle dans la console Play.
+
+Pour vous inscrire, vous devez être le propriétaire du compte ou un utilisateur disposant de l'autorisation globale "Gérer les versions de production". Vous devez également accepter les Conditions d'utilisation

@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash_screen_bg</item>
-    </style>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
-        <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowAllowEnterTransitionOverlap">true</item>
-        <item name="android:windowAllowReturnTransitionOverlap">true</item>
-        <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
-        <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
 
-        <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@android:color/white</item>
 
     </style>
 
@@ -32,19 +27,7 @@
 
 
 
-    <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">@color/accent2</item>
-        <item name="colorPrimaryDark">@color/accent2</item>
-        <item name="android:windowBackground">@color/accent2</item>
-        <item name="colorControlNormal">@color/gray</item>
-        <item name="colorControlActivated">@color/gray</item>
-        <item name="colorControlHighlight">@color/gray</item>
-        <item name="android:textColorHint">@color/gray</item>
 
-
-        <item name="colorButtonNormal">@color/accent3</item>
-        <item name="android:colorButtonNormal">@color/accent3</item>
-    </style>
 
     <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Dialog">
         <item name="colorAccent">@color/gray</item>

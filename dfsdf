@@ -1,0 +1,87 @@
+[1mdiff --git a/app/build.gradle b/app/build.gradle[m
+[1mindex 96e60cb..31c3d32 100644[m
+[1m--- a/app/build.gradle[m
+[1m+++ b/app/build.gradle[m
+[36m@@ -7,8 +7,8 @@[m [mandroid {[m
+         applicationId "com.ma.kissairaproject"[m
+         minSdkVersion 23[m
+         targetSdkVersion 29[m
+[31m-        versionCode 6[m
+[31m-        versionName "1.6"[m
+[32m+[m[32m        versionCode 7[m
+[32m+[m[32m        versionName "1.7"[m
+         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"[m
+     }[m
+     buildTypes {[m
+[1mdiff --git a/app/src/main/java/com/ma/kissairaproject/MainActivity.java b/app/src/main/java/com/ma/kissairaproject/MainActivity.java[m
+[1mindex 9b0f4c6..ec27d7a 100644[m
+[1m--- a/app/src/main/java/com/ma/kissairaproject/MainActivity.java[m
+[1m+++ b/app/src/main/java/com/ma/kissairaproject/MainActivity.java[m
+[36m@@ -35,8 +35,10 @@[m [mimport com.google.android.gms.tasks.Task;[m
+ import com.google.android.material.navigation.NavigationView;[m
+ import com.google.firebase.iid.FirebaseInstanceId;[m
+ import com.google.firebase.iid.InstanceIdResult;[m
+[32m+[m[32mimport com.google.gson.JsonObject;[m
+ [m
+ import org.json.JSONArray;[m
+[32m+[m[32mimport org.json.JSONException;[m
+ import org.json.JSONObject;[m
+ [m
+ import java.text.SimpleDateFormat;[m
+[36m@@ -652,24 +654,35 @@[m [mpublic class MainActivity extends AppCompatActivity {[m
+             BackgroundWorker backgroundWorker=new BackgroundWorker(MainActivity.this);[m
+             try {[m
+                 result= backgroundWorker.execute(postType,userId).get();[m
+[32m+[m[32m                Log.d("deconnexion_result", result+"");[m
+[32m+[m[32m                if (result!=null){[m
+[32m+[m[32m                    JSONObject json=new JSONObject(result);[m
+[32m+[m[32m                    if (json.getString("status").equals("success")){[m
+[32m+[m[32m                        sharedPreferences.edit().clear().apply();[m
+[32m+[m[32m                        sellerList.clear();[m
+[32m+[m[32m                        customer_list.clear();[m
+[32m+[m
+[32m+[m[32m                        //passer à l activité de login[m
+[32m+[m[32m                        Intent intent = new Intent(this, LoginActivity.class);[m
+[32m+[m[32m                        intent.putExtra("TOKEN", token);[m
+[32m+[m[32m                        startActivityForResult(intent, 2);[m
+[32m+[m[32m                        return true;[m
+[32m+[m[32m                    }[m
+[32m+[m[32m                }[m
+[32m+[m[32m                else {[m
+[32m+[m[32m                    Toast.makeText(MainActivity.this, "Impossible de se déconnecter depuis le serveur, merci de vérifier votre connexion internet !", Toast.LENGTH_SHORT).show();[m
+[32m+[m[32m                }[m
+             } catch (ExecutionException e) {[m
+                 e.printStackTrace();[m
+             } catch (InterruptedException e) {[m
+                 e.printStackTrace();[m
+[32m+[m[32m            } catch (JSONException e) {[m
+[32m+[m[32m                e.printStackTrace();[m
+             }[m
+[31m-            Log.d("deconnexion_result", result+"");[m
+ [m
+[31m-            sharedPreferences.edit().clear().apply();[m
+[31m-            sellerList.clear();[m
+[31m-            customer_list.clear();[m
+[31m-[m
+[31m-            //passer à l activité de login[m
+[31m-            Intent intent = new Intent(this, LoginActivity.class);[m
+[31m-            intent.putExtra("TOKEN", token);[m
+[31m-            startActivityForResult(intent, 2);[m
+[31m-[m
+[31m-            return true;[m
+[32m+[m[32m            return false;[m
+         }[m
+[32m+[m
+         if(actionBarDrawerToggle.onOptionsItemSelected(item))[m
+             return true;[m
+ [m
+[1mdiff --git a/gradle.properties b/gradle.properties[m
+[1mindex 199d16e..60af60f 100644[m
+[1m--- a/gradle.properties[m
+[1m+++ b/gradle.properties[m
+[36m@@ -17,4 +17,5 @@[m [morg.gradle.jvmargs=-Xmx1536m[m
+ android.useAndroidX=true[m
+ # Automatically convert third-party libraries to use AndroidX[m
+ android.enableJetifier=true[m
+[32m+[m[32mandroid.debug.obsoleteApi=true[m
+ [m

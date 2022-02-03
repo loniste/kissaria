@@ -18,7 +18,8 @@ public class BackgroundWorkerProfile extends AsyncTask<String, Integer, Drawable
     @Override
     protected Drawable doInBackground(String... linkSuffix) {
         // This is done in a background thread
-        String imageUrl= PREFIX_LINK + linkSuffix[0];
+//        String imageUrl= PREFIX_LINK + linkSuffix[0];
+        String imageUrl= linkSuffix[0];
 
         return downloadImage(imageUrl);
     }
