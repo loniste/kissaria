@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:layout_height="wrap_content"
+
+    >
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:background="#AB47BC"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/bgContainer"
+
+        >
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gd_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.81" />
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/playIV"
+            android:layout_width="40dp"
+            android:layout_marginStart="@dimen/size10"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_rawRes="@raw/pause_play"
+
+
+            />
+
+
+        <!--        app:lottie_autoPlay="true"-->
+        <!--        app:lottie_loop="true"-->
+        <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+            android:id="@+id/progress"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="@dimen/size10"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/gd_progress"
+            app:layout_constraintStart_toEndOf="@id/playIV"
+            app:layout_constraintTop_toTopOf="parent"
+            app:rcBackgroundColor="#A5A5A5"
+            app:rcMax="100"
+            app:rcProgress="50.1"
+            app:rcProgressColor="#000000"
+            app:rcRadius="20dp"
+            app:rcReverse="false"
+            app:rcSecondaryProgress="60.1"
+            app:rcSecondaryProgressColor="#A5A5A5" />
+        <!--        app:rcAnimationEnable="true"-->
+        <!--        app:rcAnimationSpeedScale="@integer/material_motion_duration_long_2"-->
+
+        <TextView
+            android:id="@+id/leftTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/size10"
+            android:text="07:00"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/audioCursor"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="@dimen/size10"
+            app:layout_constraintBottom_toBottomOf="@id/progress"
+            app:layout_constraintStart_toStartOf="@id/progress"
+            app:layout_constraintTop_toTopOf="@id/progress">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:background="@drawable/audio_progress_bg" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout><!--    <me.jagar.chatvoiceplayerlibrary.VoicePlayerView-->
+    <!--        android:id="@+id/voicePlayerView"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:enableVisualizer="false"-->
+    <!--        app:playPauseBackgroundColor="#ff7700"-->
+    <!--        app:playPauseCornerRadius="100"-->
+    <!--        app:playProgressbarColor="#ff7700"-->
+    <!--        app:progressTimeColor="#000"-->
+    <!--        app:seekBarProgressColor="#000"-->
+    <!--        app:seekBarThumbColor="#FFC107"-->
+    <!--        app:shareBackgroundColor="#ff7700"-->
+    <!--        app:shareCornerRadius="100"-->
+    <!--        app:shareText="SHARE ME"-->
+    <!--        app:showShareButton="true"-->
+    <!--        app:showTiming="true"-->
+    <!--        app:timingBackgroundColor="#6AFF7700"-->
+    <!--        app:viewBackground="#C6C4CF"-->
+    <!--        app:viewCornerRadius="100"-->
+    <!--        app:visualizationNotPlayedColor="#727171"-->
+    <!--        app:visualizationPlayedColor="#ff7700"-->
+    <!--        app:layout_constraintBottom_toTopOf="@+id/dateTV"-->
+    <!--        app:layout_constraintEnd_toEndOf="@id/gd_audio"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        />-->

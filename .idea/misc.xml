@@ -14,12 +14,14 @@
         <entry key="..\:/Users/dell/AndroidStudioProjects/kissairaProject/app/src/main/res/layout/activity_signup.xml" value="0.2" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/kissairaProject/app/src/main/res/layout/appbar.xml" value="0.33" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/kissairaProject/app/src/main/res/layout/navigation_menu_content.xml" value="0.25" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/kissairaProject/app/src/main/res/layout/single_row_audio.xml" value="0.1" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/kissairaProject/app/src/main/res/layout/single_row_detail_cmd.xml" value="0.18" />
-        <entry key="..\:/Users/dell/AndroidStudioProjects/kissairaProject/app/src/main/res/layout/single_row_seller.xml" value="0.13" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/kissairaProject/app/src/main/res/layout/single_row_seller.xml" value="0.18" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/kissairaProject/app/src/main/res/layout/splash_screen.xml" value="0.1671875" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/kissairaProject/app/src/main/res/layout/ui_text_view.xml" value="0.33" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/kissairaProject/app/src/main/res/menu/menu_main.xml" value="0.1359375" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/kissairaProject/app/src/main/res/menu/navigation_menu.xml" value="0.2234375" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/kissairaProject/audio_player/src/main/res/layout/audio_player.xml" value="0.18" />
       </map>
     </option>
   </component>

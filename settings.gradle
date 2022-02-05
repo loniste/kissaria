@@ -1,1 +1,4 @@
 include ':app'
+
+include ':record-view'
+include ':audio_player'

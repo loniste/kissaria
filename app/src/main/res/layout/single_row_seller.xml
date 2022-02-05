@@ -6,7 +6,6 @@
     android:id="@+id/cv"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:layout_height="match_parent"
     android:layout_marginBottom="0dp"
     android:animateLayoutChanges="false"
     app:cardBackgroundColor="#f2f2f2"
@@ -107,7 +106,7 @@
 
             android:baselineAlignBottom="true"
             android:scaleType="fitEnd"
-
+android:adjustViewBounds="true"
             android:src="@drawable/cmd_icon"
             app:layout_constraintBaseline_toBaselineOf="@id/commande"
 
@@ -134,7 +133,6 @@
 
             app:layout_constraintTop_toTopOf="parent"
 
-
             />
 
         <ImageView
@@ -144,7 +142,7 @@
 
             android:baselineAlignBottom="true"
             android:scaleType="fitEnd"
-
+            android:adjustViewBounds="true"
 
             android:src="@drawable/ic_ready_icon"
             app:layout_constraintBaseline_toBaselineOf="@id/status_tv"
@@ -162,14 +160,14 @@
             android:gravity="top"
 
             android:paddingLeft="5dp"
-            tools:text="Prêt"
-
             android:textColor="#efc84a"
 
             android:textSize="@dimen/normal"
+
             app:layout_constraintLeft_toRightOf="@id/ver_left_entries"
             app:layout_constraintRight_toLeftOf="@id/ver_right_entries"
             app:layout_constraintTop_toBottomOf="@id/commande"
+            tools:text="Prêt"
 
             />
 
@@ -180,7 +178,7 @@
             android:baselineAlignBottom="true"
             android:scaleType="fitEnd"
 
-
+android:adjustViewBounds="true"
             android:src="@drawable/user_icon"
             app:layout_constraintBaseline_toBaselineOf="@id/full_name"
 
@@ -218,7 +216,7 @@
             android:baselineAlignBottom="true"
             android:scaleType="fitEnd"
 
-
+android:adjustViewBounds="true"
             android:src="@drawable/ic_home_icon"
             app:layout_constraintBaseline_toBaselineOf="@id/address"
 
@@ -425,152 +423,150 @@
             android:visibility="gone"
 
 
-            app:layout_constraintLeft_toRightOf="@id/ver_right_ribbon"
+            app:layout_constraintBottom_toBottomOf="parent"
 
+            app:layout_constraintLeft_toRightOf="@id/ver_right_ribbon"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/price"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:visibility="visible"
 
             >
-<androidx.constraintlayout.widget.ConstraintLayout
 
-            android:id="@+id/rvsCL"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
 
-app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/rvsCL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
 
-
-
+                app:layout_constraintTop_toTopOf="parent"
 
 
-            >
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/head_of_table"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+                >
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/head_of_table"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
 
 
-        android:layout_marginBottom="@dimen/cardview_margin"
-        android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/cardview_margin"
+                    android:orientation="horizontal"
 
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-
-
-        >
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/font_style"
-            android:text="Libellé"
-            android:textColor="@color/almost_black"
-            android:textSize="@dimen/normal"
-            android:textStyle="bold"
-
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/qty"
-
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/font_style"
-            android:gravity="center"
-            android:text="Quantité"
-            android:textColor="@color/almost_black"
-            android:textSize="@dimen/normal"
-            android:textStyle="bold"
-
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/font_style"
-            android:gravity="end"
-            android:text="Prix"
-            android:textColor="@color/almost_black"
-            android:textSize="@dimen/normal"
-            android:textStyle="bold"
-
-            />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <View
-        android:id="@+id/separator"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="@dimen/cardview_margin"
-        android:background="@color/almost_black"
-        app:layout_constraintTop_toBottomOf="@id/head_of_table"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
 
 
-        />
+                    >
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_detail_cmd"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/font_style"
+                        android:text="Libellé"
+                        android:textColor="@color/almost_black"
+                        android:textSize="@dimen/normal"
+                        android:textStyle="bold"
 
-        app:layout_constraintTop_toBottomOf="@id/separator"
-        tools:listitem="@layout/single_row_detail_cmd"
-        tools:itemCount="5"
-        >
+                        />
 
-    </androidx.recyclerview.widget.RecyclerView>
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/audios"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:fontFamily="@font/font_style"
-        android:text="Audios"
-        android:textColor="@color/almost_black"
-        android:textSize="@dimen/normal"
-        android:layout_marginBottom="@dimen/cardview_margin"
-        android:layout_marginTop="@dimen/cardview_margin"
-        android:orientation="horizontal"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_detail_cmd"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/qty"
 
-        />
-    <View
-        android:id="@+id/separator2"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="@dimen/cardview_margin"
-        android:background="@color/almost_black"
-        app:layout_constraintTop_toBottomOf="@id/audios"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/font_style"
+                        android:gravity="center"
+                        android:text="Quantité"
+                        android:textColor="@color/almost_black"
+                        android:textSize="@dimen/normal"
+                        android:textStyle="bold"
 
+                        />
 
-        />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_voices"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+                    <androidx.appcompat.widget.AppCompatTextView
 
-        app:layout_constraintTop_toBottomOf="@id/separator2"
-        tools:listitem="@layout/single_row_detail_cmd"
-        tools:itemCount="5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/font_style"
+                        android:gravity="end"
+                        android:text="Prix"
+                        android:textColor="@color/almost_black"
+                        android:textSize="@dimen/normal"
+                        android:textStyle="bold"
 
-        >
+                        />
 
-    </androidx.recyclerview.widget.RecyclerView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <View
+                    android:id="@+id/separator"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="@dimen/cardview_margin"
+                    android:background="@color/almost_black"
+                    app:layout_constraintTop_toBottomOf="@id/head_of_table"
 
 
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_detail_cmd"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    app:layout_constraintTop_toBottomOf="@id/separator"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/single_row_detail_cmd">
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/audios"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/cardview_margin"
+                    android:layout_marginBottom="@dimen/cardview_margin"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/font_style"
+                    android:orientation="horizontal"
+                    android:text="Audios"
+                    android:textColor="@color/almost_black"
+                    android:textSize="@dimen/normal"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rv_detail_cmd"
+
+                    />
+
+                <View
+                    android:id="@+id/separator2"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="@dimen/cardview_margin"
+                    android:background="@color/almost_black"
+                    app:layout_constraintTop_toBottomOf="@id/audios"
+
+
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_voices"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    app:layout_constraintTop_toBottomOf="@id/separator2"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/single_row_detail_cmd"
+
+                    >
+
+                </androidx.recyclerview.widget.RecyclerView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             <TextView
@@ -588,8 +584,8 @@ app:layout_constraintTop_toTopOf="parent"
                 android:textColor="@color/white"
                 android:textSize="@dimen/normal"
 
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-app:layout_constraintBottom_toBottomOf="parent"
 
                 />
 
@@ -609,9 +605,9 @@ app:layout_constraintBottom_toBottomOf="parent"
                 android:textColor="@color/white"
 
                 android:textSize="@dimen/normal"
-                app:layout_constraintLeft_toRightOf="@+id/txtView1"
-
                 app:layout_constraintBottom_toBottomOf="parent"
+
+                app:layout_constraintLeft_toRightOf="@+id/txtView1"
 
                 />
 
@@ -624,9 +620,9 @@ app:layout_constraintBottom_toBottomOf="parent"
                 android:scaleType="fitXY"
                 android:src="@drawable/call"
 
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
 
                 />
 

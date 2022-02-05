@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--rename as following:     bg_dark_solid_top_corner-->
+
+<shape android:shape="rectangle"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:topRightRadius="@dimen/size5"
+        android:topLeftRadius="0dp"
+        android:bottomRightRadius="@dimen/size5"
+        android:bottomLeftRadius="@dimen/size5"
+        />
+
+    <solid android:color="#CEDEF7"
+
+        />
+</shape>
+

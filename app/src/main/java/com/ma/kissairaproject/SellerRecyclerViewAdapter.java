@@ -1,5 +1,7 @@
 package com.ma.kissairaproject;
 
+import static com.ma.kissairaproject.APIManager.BASE_URL_SERVER;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +25,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.TransitionManager;
 
+import com.hakik.audio_player.AudioPlayerView;
 import com.ma.kissairaproject.models.SellerOrdersResponse;
+import com.ma.kissairaproject.utilities.Constants;
 import com.ma.kissairaproject.utilities.Utils;
 
 import org.json.JSONException;
@@ -195,6 +199,9 @@ this.statusBarHeight=getStatusBarHeight();
 
                 holder.rv_detail_cmd.setLayoutManager(new LinearLayoutManager(context));
                 holder.rv_detail_cmd.setAdapter(new RvCmdDetailsAdapter(mDataset.get(position).products));
+
+               holder.rv_voices.setLayoutManager(new LinearLayoutManager(context));
+                holder.rv_voices.setAdapter(new RvAudioAdapter(mDataset.get(position).audio));
 
                 if (prev_expanded != -1 && prev_expanded != holder.getItemId()) {
                     //recycler.findViewHolderForLayoutPosition(prev_expanded).itemView.setActivated(false);
@@ -497,6 +504,7 @@ this.statusBarHeight=getStatusBarHeight();
         public TextView afterCommaPrice;
         public ImageView callButton;
         public RecyclerView rv_detail_cmd;
+        public RecyclerView rv_voices;
         public TextView bouton1;
         public TextView bouton2;
         ConstraintLayout container;
@@ -538,6 +546,7 @@ this.statusBarHeight=getStatusBarHeight();
             this.creation_time = view.findViewById(R.id.creation_time);
             this.full_name = view.findViewById(R.id.full_name);
             this.rv_detail_cmd = view.findViewById(R.id.rv_detail_cmd);
+            this.rv_voices = view.findViewById(R.id.rv_detail_cmd);
             this.v = view;
             this.profil = view.findViewById(R.id.profile_image);
         }
@@ -550,7 +559,6 @@ this.statusBarHeight=getStatusBarHeight();
 
 class RvCmdDetailsAdapter extends RecyclerView.Adapter<RvCmdDetailsAdapter.MyViewHolder> {
     private List<SellerOrdersResponse.Product> mDataSet;
-
     RvCmdDetailsAdapter(List<SellerOrdersResponse.Product> list) {
         mDataSet = list;
         //Log.d("mDataSet", String.valueOf(mDataSet.get(1).getArticle()));
@@ -600,4 +608,68 @@ class RvCmdDetailsAdapter extends RecyclerView.Adapter<RvCmdDetailsAdapter.MyVie
             return v;
         }
     }
+}
+class RvAudioAdapter extends RecyclerView.Adapter<RvAudioAdapter.MyViewHolder> {
+    private List<SellerOrdersResponse.Audio> mDataSet;
+    private RecyclerView recyclerView;
+
+    RvAudioAdapter(List<SellerOrdersResponse.Audio> list) {
+        mDataSet = list;
+        //Log.d("mDataSet", String.valueOf(mDataSet.get(1).getArticle()));
+    }
+
+    @NonNull
+    @Override
+    public RvAudioAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row_detail_cmd, parent, false);
+        MyViewHolder vh = new MyViewHolder(v);
+        return vh;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RvAudioAdapter.MyViewHolder holder, int position) {
+        holder.audioPlayerView.setRecordUrl(BASE_URL_SERVER + mDataSet.get(position).audio, onAudioActionListener);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView=recyclerView;
+    }
+
+    @Override
+    public int getItemCount() {
+        return mDataSet.size();
+    }
+
+    public static class MyViewHolder extends RecyclerView.ViewHolder {//Why static?
+        AudioPlayerView audioPlayerView;
+        View v;
+
+        MyViewHolder(View view) {
+            super(view);
+            this.audioPlayerView = view.findViewById(R.id.audioPlayerView);
+            this.v = view;
+        }
+
+        View getView() {
+            return v;
+        }
+
+
+
+    }
+    private AudioPlayerView.OnAudioActionListener onAudioActionListener = new AudioPlayerView.OnAudioActionListener() {
+        @Override
+        public void onActionDown() {
+            if (recyclerView.getLayoutManager() != null)
+                ((CustomLayoutManager) recyclerView.getLayoutManager()).setScrollEnabled(false);
+        }
+
+        @Override
+        public void onActionUp() {
+            if (recyclerView.getLayoutManager() != null)
+                ((CustomLayoutManager) recyclerView.getLayoutManager()).setScrollEnabled(true);
+        }
+    };
 }
